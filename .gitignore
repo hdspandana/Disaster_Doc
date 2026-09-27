@@ -1,0 +1,12 @@
+.env
+outputs/*.json
+outputs/*.pdf
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/secrets.toml
+
+.venv/
+.EasyOCR/
+.vscode/
+.idea/

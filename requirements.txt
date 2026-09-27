@@ -1,0 +1,20 @@
+# DisasterDoc - hackathon MVP dependencies
+# Deterministic core (always required)
+streamlit==1.64.0        # UI
+opencv-python>=4.8       # image decoding, preprocessing, damage-map morphology, annotation
+numpy>=1.24              # numeric work
+Pillow>=10.0             # demo document rendering + image handling
+
+# OCR engine (Phase 1 of the pipeline)
+easyocr==1.7.2           # text + bounding box + confidence per observation (CPU)
+torch>=2.0               # easyocr runtime (CPU wheels are fine)
+
+# Reports
+reportlab>=4.0           # PDF evidence report (JSON export works without it)
+
+# Optional AI commentary layer - the app runs fully without a key
+google-genai>=1.0        # Gemini commentary (advisory only)
+python-dotenv>=1.0       # .env loading for local development
+
+# Tests
+pytest>=7.4
