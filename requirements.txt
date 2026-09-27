@@ -1,7 +1,7 @@
 # DisasterDoc - hackathon MVP dependencies
 # Deterministic core (always required)
 streamlit==1.64.0        # UI
-opencv-python>=4.8       # image decoding, preprocessing, damage-map morphology, annotation
+opencv-python-headless==4.10.0.84       # image decoding, preprocessing, damage-map morphology, annotation
 numpy>=1.24              # numeric work
 Pillow>=10.0             # demo document rendering + image handling
 
