@@ -34,7 +34,7 @@ def ai_available() -> bool:
         return False
     try:
         import google.genai  # noqa: F401
-    except Exception:
+    except Exception:  # noqa: BLE001 - optional SDK import failures must leave deterministic processing available
         return False
     return True
 
@@ -100,6 +100,9 @@ def enforce_guardrails(entry: dict[str, Any], field: FieldResult, pattern: str) 
 
 
 def _prompt(field: FieldResult, expected_pattern: str, document_context: dict) -> str:
+    validation_evidence = json.dumps(
+        [item.to_dict() for item in field.validation_evidence], ensure_ascii=False
+    )
     return f"""You are an assistant to a human caseworker reviewing a DAMAGED document.
 
 You are given a deterministic finding that you must NOT contradict or change.
@@ -108,6 +111,8 @@ Field: {field.label}
 Deterministic status: {field.status}
 Raw OCR text observed on the damaged document: {field.raw_ocr_text!r}
 Deterministic reasons: {' | '.join(field.reasons)}
+Deterministic validation result: {field.validation_result}
+Deterministic validation evidence: {validation_evidence}
 Expected value pattern for this field: {expected_pattern}
 Document context: {json.dumps(document_context)}
 
@@ -115,6 +120,8 @@ Rules you MUST follow:
 - Never state a complete field value as fact.
 - Never output a value that fully matches the expected pattern above.
 - Never claim the document says something it does not show.
+- Do not perform, alter, or invent field validation. If validation is mentioned, summarize only the deterministic result and evidence supplied above.
+- Never output validation results, validator findings, or deterministic reason codes as your own fields.
 - Only suggest what the incomplete fragment might be, and how a human could verify it.
 
 Reply with ONLY this JSON object, no markdown, no extra prose:
@@ -156,12 +163,12 @@ def generate_commentary(
                 entry, entry_notes = enforce_guardrails(parsed, f, pattern)
                 commentary[f.field_name] = entry
                 notes.extend(entry_notes)
-            except Exception as exc:  # one field failing must not kill the rest
+            except Exception as exc:  # noqa: BLE001 - one optional SDK field failure must not kill the rest
                 notes.append(f"AI commentary for '{f.field_name}' failed: {type(exc).__name__}.")
         if not commentary:
             return {}, notes, f"AI commentary unavailable. Deterministic evidence results are still available. ({notes[-1] if notes else 'no response'})"
         return commentary, notes, None
-    except Exception as exc:  # pragma: no cover - SDK/runtime dependent
+    except Exception as exc:  # noqa: BLE001 - optional SDK/runtime failure must not break deterministic results
         return {}, [], (
             "AI commentary unavailable. Deterministic evidence results are still available. "
             f"({type(exc).__name__})"
@@ -186,4 +193,4 @@ def _parse_json(text: str) -> dict:
     return data
 
 
-__all__ = ["ai_available", "status_text", "generate_commentary", "enforce_guardrails"]
+__all__ = ["ai_available", "enforce_guardrails", "generate_commentary", "status_text"]

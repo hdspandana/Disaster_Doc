@@ -12,10 +12,13 @@ evidence always refers to the document as uploaded.
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
+from io import BytesIO
 
 import cv2
 import numpy as np
+from PIL import Image, UnidentifiedImageError
 
 from . import config
 
@@ -35,22 +38,88 @@ class InvalidImageError(ValueError):
     """Raised when the uploaded bytes cannot be decoded into a usable image."""
 
 
+def _format_from_signature(data: bytes) -> str | None:
+    """Recognize only image containers explicitly accepted by the upload UI."""
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "PNG"
+    if data.startswith(b"\xff\xd8\xff"):
+        return "JPEG"
+    if len(data) >= 12 and data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "WEBP"
+    if data.startswith(b"BM"):
+        return "BMP"
+    if data.startswith((b"II*\x00", b"MM\x00*", b"II+\x00", b"MM\x00+")):
+        return "TIFF"
+    return None
+
+
+def _validate_image_container(data: bytes) -> tuple[int, int]:
+    """Check signature, decoded container format, and declared resource bounds."""
+    magic_format = _format_from_signature(data)
+    if magic_format is None:
+        raise InvalidImageError(
+            "This file could not be read as an image. Upload a JPG, PNG, WebP, BMP, or TIFF image."
+        )
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(BytesIO(data)) as source:
+                detected_format = (source.format or "").upper()
+                width, height = source.size
+                if detected_format != magic_format:
+                    raise InvalidImageError("The file signature does not match its image container.")
+                if width < 40 or height < 40:
+                    raise InvalidImageError(
+                        f"The image is too small to analyse ({width}x{height} px). "
+                        "Please upload a larger scan or photograph."
+                    )
+                if max(width, height) > config.MAX_IMAGE_DIMENSION:
+                    raise InvalidImageError(
+                        f"The image dimensions exceed the {config.MAX_IMAGE_DIMENSION}px limit."
+                    )
+                if width * height > config.MAX_IMAGE_PIXELS:
+                    raise InvalidImageError(
+                        f"The image exceeds the {config.MAX_IMAGE_PIXELS:,}-pixel limit."
+                    )
+                source.verify()
+    except InvalidImageError:
+        raise
+    except (
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+        UnidentifiedImageError,
+        OSError,
+        SyntaxError,
+        ValueError,
+    ) as exc:
+        raise InvalidImageError("The file is not a valid supported image container.") from exc
+
+    return width, height
+
+
 def load_image(data: bytes) -> np.ndarray:
-    """Decode uploaded bytes into a BGR image, raising a user-facing error if impossible."""
+    """Validate and decode an uploaded image before it can reach OCR."""
     if not data:
         raise InvalidImageError("The uploaded file is empty.")
+    if len(data) > config.MAX_UPLOAD_BYTES:
+        max_mb = config.MAX_UPLOAD_BYTES // (1024 * 1024)
+        raise InvalidImageError(f"The file is too large. Upload an image no larger than {max_mb} MB.")
+
+    _validate_image_container(data)
     buf = np.frombuffer(data, dtype=np.uint8)
-    img = cv2.imdecode(buf, cv2.IMREAD_COLOR)
+    try:
+        img = cv2.imdecode(buf, cv2.IMREAD_COLOR)
+    except cv2.error as exc:
+        raise InvalidImageError("The supported image could not be decoded safely.") from exc
     if img is None:
-        raise InvalidImageError(
-            "This file could not be read as an image. Please upload a JPG or PNG scan or "
-            "photograph of the document."
-        )
+        raise InvalidImageError("The supported image could not be decoded safely.")
+
     h, w = img.shape[:2]
     if h < 40 or w < 40:
-        raise InvalidImageError(
-            f"The image is too small to analyse ({w}x{h} px). Please upload a scan of at least 400x250 px."
-        )
+        raise InvalidImageError("The image is too small to analyse. Upload a larger scan or photograph.")
+    if max(w, h) > config.MAX_IMAGE_DIMENSION or w * h > config.MAX_IMAGE_PIXELS:
+        raise InvalidImageError("The decoded image exceeds the configured resource limits.")
     return img
 
 
@@ -101,4 +170,4 @@ def to_original_bbox(bbox: list[int], scale: float, original_shape: tuple[int, i
 
 def to_original_points(points, scale: float) -> list[list[int]]:
     """Convert OCR polygon points to original-image integer coordinates."""
-    return [[int(round(p[0] / scale)), int(round(p[1] / scale))] for p in points]
+    return [[round(p[0] / scale), round(p[1] / scale)] for p in points]
