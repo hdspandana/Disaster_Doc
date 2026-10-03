@@ -191,15 +191,22 @@ def _repository_state() -> dict[str, Any]:
             capture_output=True,
             text=True,
         ).stdout.strip()
-        dirty = bool(
-            subprocess.run(
-                ["git", "status", "--porcelain"],
-                cwd=ROOT,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-        )
+        status = subprocess.run(
+            [
+                "git",
+                "status",
+                "--porcelain",
+                "--untracked-files=all",
+                "--",
+                ".",
+                ":(exclude)evaluation/phase_6_root_cause_v1.json",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        dirty = bool(status)
     except (OSError, subprocess.CalledProcessError):
         return {"revision": None, "worktree_dirty": None}
     return {"revision": revision, "worktree_dirty": dirty}
