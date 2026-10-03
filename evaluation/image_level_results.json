@@ -1,0 +1,6358 @@
+{
+  "schema_version": 1,
+  "evaluation_version": "image-level-v1",
+  "title": "DisasterDoc small seeded image-level evaluation",
+  "scope": "Synthetic-only end-to-end evaluation through the unchanged EasyOCR and DisasterDoc pipeline.",
+  "ground_truth_policy": "source values and ground_truth are evaluation-only metadata. The runner passes only generated image bytes to run_pipeline; truth is compared only after the pipeline returns.",
+  "image_corruption_policy": "For semantic-edit cases, the altered target string is rendered into image pixels using the existing synthetic card renderer. It is never sent as an OCR/classifier input. The original source value remains the evaluation ground truth.",
+  "method": "generated_synthetic_images_through_run_pipeline",
+  "run_started_at_utc": "2026-10-02T11:01:50.349167+00:00",
+  "versions": {
+    "code_version": "disasterdoc-0.1.0",
+    "pipeline_version": "disasterdoc-0.1.0",
+    "template": "synthetic_id_v1",
+    "ocr_engine": "EasyOCR",
+    "repository_revision": "ea0d7e95cb36",
+    "repository_worktree_dirty": true,
+    "source_sha256": {
+      "src/ocr.py": "8e079a06d7b12da9a283b1d470f1017707dfa75cc581e7414d82a2a1424f757c",
+      "src/pipeline.py": "f8d53d4b5558ec75656e19e8dec79e0441526bfbaf446eae551be2d05fe9b48f",
+      "src/damage.py": "719736102619bcb3c6eb76a822fd6cedb26e73fc1d8d9482fbff7f00e09a713c",
+      "src/fields.py": "611c804272eab0291cf7fad2a615b6705c76618077878a28ce2b4810c1cbfd7e",
+      "src/classifier.py": "ebd51771d0fbab28d407ea6c9149f6b67917f7b2f21fb10d9e9f258808ca56e5",
+      "src/config.py": "1a8815fc23c895697080dbfb2eabc883adb7ac284ce31f2f22f73905cfe3451c",
+      "tools/make_demo_docs.py": "4900e4b570d28c312ad9fb8e46b1c76549d875f9ef5c3795d5a9356bef8b5b1e"
+    },
+    "manifest_sha256": "990f3a7cce65220ccf402098fb2f34bdc4741926fbdb5d136fa6f79138fd7f77"
+  },
+  "summary": {
+    "source_count": 10,
+    "case_count": 40,
+    "pipeline_errors": 0,
+    "outcomes": {
+      "CORRECT_ABSTENTION": 18,
+      "CORRECT_RECOVERY": 10,
+      "FALSE_RECOVERY": 11,
+      "INCORRECT_REJECTION": 1
+    },
+    "statuses": {
+      "PARTIAL": 10,
+      "RECOVERED": 21,
+      "UNRECOVERABLE": 9
+    },
+    "correct_recovery_count": 10,
+    "false_recovery_count": 11,
+    "correct_abstention_count": 18,
+    "incorrect_rejection_count": 1,
+    "recovery_coverage": {
+      "numerator_recovered": 21,
+      "denominator_pipeline_success": 40,
+      "value": 0.525
+    },
+    "exact_match": {
+      "numerator_correct_recovery": 10,
+      "denominator_pipeline_success": 40,
+      "value": 0.25
+    },
+    "false_recovery_rate_among_recovered": {
+      "numerator_false_recoveries": 11,
+      "denominator_recovered": 21,
+      "value": 0.52381
+    },
+    "false_recovery_case_ids": [
+      "source_01_mild",
+      "source_01_medium",
+      "source_02_mild",
+      "source_02_medium",
+      "source_03_mild",
+      "source_03_medium",
+      "source_04_mild",
+      "source_05_mild",
+      "source_06_mild",
+      "source_06_medium",
+      "source_07_mild"
+    ],
+    "false_recoveries_by_rendered_content": {
+      "ocr_matches_rendered_wrong_value": 11,
+      "ocr_differs_from_rendered_value": 0
+    },
+    "outcomes_by_corruption_type": {
+      "address_O_to_0_confusion": {
+        "INCORRECT_REJECTION": 1
+      },
+      "blur": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "deletion": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "digit_transposition_63_to_36": {
+        "CORRECT_ABSTENTION": 1,
+        "FALSE_RECOVERY": 2
+      },
+      "fade_contrast_loss_and_scratch": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "impossible_calendar_date": {
+        "CORRECT_ABSTENTION": 2,
+        "FALSE_RECOVERY": 1
+      },
+      "insertion": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "jpeg_compression_and_occlusion": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "none": {
+        "CORRECT_RECOVERY": 10
+      },
+      "plausible_wrong_address": {
+        "CORRECT_ABSTENTION": 2
+      },
+      "plausible_wrong_district": {
+        "CORRECT_ABSTENTION": 2,
+        "FALSE_RECOVERY": 1
+      },
+      "plausible_wrong_name": {
+        "CORRECT_ABSTENTION": 1,
+        "FALSE_RECOVERY": 2
+      },
+      "single_digit_substitution_9_to_8": {
+        "CORRECT_ABSTENTION": 1,
+        "FALSE_RECOVERY": 2
+      },
+      "truncation": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "valid_date_digit_substitution": {
+        "CORRECT_ABSTENTION": 2,
+        "FALSE_RECOVERY": 1
+      },
+      "valid_format_wrong_identifier": {
+        "CORRECT_ABSTENTION": 1,
+        "FALSE_RECOVERY": 2
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "source_01_clean",
+      "source_id": "source_01",
+      "field_name": "id_number",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261102,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_01/clean.png",
+        "sha256": "7d63bcbf0aeb3115a5914b066e6825dd9da79af27f83c11b7996ae52f5a8ba7b",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_01/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 10.9977,
+        "ocr_runtime_seconds": 10.97,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1761,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:7d63bcbf0aeb3115a5914b066e6825dd9da79af27f83c11b7996ae52f5a8ba7b"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 10.984,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "26 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.6% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "DX-48291",
+        "claimed_value": "DX-48291",
+        "ocr_confidence": 0.7613618085895522,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            225,
+            241
+          ],
+          "damage_probe_bbox": [
+            225,
+            200,
+            260,
+            246
+          ],
+          "obscuration_in_zone": 0.056273,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_010",
+            "bbox": [
+              59,
+              205,
+              225,
+              241
+            ],
+            "ocr_confidence": 0.7614,
+            "text": "DX-48291",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                225,
+                205
+              ],
+              [
+                225,
+                241
+              ],
+              [
+                59,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "DX-48291",
+        "rendered_target_value": "DX-48291",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_01_mild",
+      "source_id": "source_01",
+      "field_name": "id_number",
+      "corruption_type": "single_digit_substitution_9_to_8",
+      "severity": "mild",
+      "seed": 20261103,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_01/mild.png",
+        "sha256": "de798393b8ec0fb9eb47fc4e075ec6ca9673429bc0987496539d1a5889ebc489",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_01/mild_occlusion.png",
+        "damage_mask_sha256": "10bed4a4ebd8036745ff847e452ef0de2860565690e52cebf2e48beb8058956e",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.331808,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.7386,
+        "ocr_runtime_seconds": 6.7,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.185,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:de798393b8ec0fb9eb47fc4e075ec6ca9673429bc0987496539d1a5889ebc489"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.725,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "18.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "DX-48281",
+        "claimed_value": "DX-48281",
+        "ocr_confidence": 0.9659051231664879,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            225,
+            241
+          ],
+          "damage_probe_bbox": [
+            225,
+            200,
+            260,
+            246
+          ],
+          "obscuration_in_zone": 0.054622,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              59,
+              205,
+              225,
+              241
+            ],
+            "ocr_confidence": 0.9659,
+            "text": "DX-48281",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                225,
+                205
+              ],
+              [
+                225,
+                241
+              ],
+              [
+                59,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "DX-48291",
+        "rendered_target_value": "DX-48281",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_01_medium",
+      "source_id": "source_01",
+      "field_name": "id_number",
+      "corruption_type": "single_digit_substitution_9_to_8",
+      "severity": "medium",
+      "seed": 20261104,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_01/medium.png",
+        "sha256": "a6a6d03bc701829e240f4ed5acb053413f7438211436ed0f599d010aeae7bff2",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_01/medium_occlusion.png",
+        "damage_mask_sha256": "8259aff929bef6cc68cb6e97357e6944eff3641e6acd4834491f17077b2f3684",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.138797,
+          "target_region_fraction_any": 0.050257,
+          "target_region_fraction_opaque": 0.026229
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.712,
+        "ocr_runtime_seconds": 6.68,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2089,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:a6a6d03bc701829e240f4ed5acb053413f7438211436ed0f599d010aeae7bff2"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.698,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "20 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "20.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "DX-48281",
+        "claimed_value": "DX-48281",
+        "ocr_confidence": 0.9925969349459984,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            60,
+            206,
+            224,
+            238
+          ],
+          "damage_probe_bbox": [
+            224,
+            202,
+            259,
+            242
+          ],
+          "obscuration_in_zone": 0.054292,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              60,
+              206,
+              224,
+              238
+            ],
+            "ocr_confidence": 0.9926,
+            "text": "DX-48281",
+            "usable": true,
+            "polygon": [
+              [
+                60,
+                206
+              ],
+              [
+                224,
+                206
+              ],
+              [
+                224,
+                238
+              ],
+              [
+                60,
+                238
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "DX-48291",
+        "rendered_target_value": "DX-48281",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_01_severe",
+      "source_id": "source_01",
+      "field_name": "id_number",
+      "corruption_type": "single_digit_substitution_9_to_8",
+      "severity": "severe",
+      "seed": 20261105,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_01/severe.png",
+        "sha256": "3adf69eab392128e56ecdd1b0f82c4e0b6b74193edf4bdce45b56d884088b86c",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_01/severe_occlusion.png",
+        "damage_mask_sha256": "ead78cc051f55c6fe1e1b09b733716619819c04278925e818033a3a57578117b",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.956989,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.405943
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6639,
+        "ocr_runtime_seconds": 6.63,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2692,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:3adf69eab392128e56ecdd1b0f82c4e0b6b74193edf4bdce45b56d884088b86c"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.65,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "16 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "26.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 7,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "DX-48291",
+        "rendered_target_value": "DX-48281",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_02_clean",
+      "source_id": "source_02",
+      "field_name": "id_number",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261202,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_02/clean.png",
+        "sha256": "5cd4eb1ec000a873db73445f794a0a7edc981285a7d973073c1350d138ea48ba",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_02/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.5852,
+        "ocr_runtime_seconds": 6.56,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1751,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:5cd4eb1ec000a873db73445f794a0a7edc981285a7d973073c1350d138ea48ba"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.573,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "QA-63714",
+        "claimed_value": "QA-63714",
+        "ocr_confidence": 0.849868774345572,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            229,
+            243
+          ],
+          "damage_probe_bbox": [
+            229,
+            200,
+            264,
+            248
+          ],
+          "obscuration_in_zone": 0.054219,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              59,
+              205,
+              229,
+              243
+            ],
+            "ocr_confidence": 0.8499,
+            "text": "QA-63714",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                229,
+                205
+              ],
+              [
+                229,
+                243
+              ],
+              [
+                59,
+                243
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "QA-63714",
+        "rendered_target_value": "QA-63714",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_02_mild",
+      "source_id": "source_02",
+      "field_name": "id_number",
+      "corruption_type": "digit_transposition_63_to_36",
+      "severity": "mild",
+      "seed": 20261203,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_02/mild.png",
+        "sha256": "ce528c01740a5a7e8e4898504ea98dc1afbbf31af119ea4058741ce4d6a12e61",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_02/mild_occlusion.png",
+        "damage_mask_sha256": "4e5aca145b82789dc9756d26210fe9fc6c68c7282c09aa68d779d4c926bdf91c",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.334348,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8719,
+        "ocr_runtime_seconds": 6.84,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1809,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:ce528c01740a5a7e8e4898504ea98dc1afbbf31af119ea4058741ce4d6a12e61"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.858,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "26 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "18.1% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "QA-36714",
+        "claimed_value": "QA-36714",
+        "ocr_confidence": 0.9238394446566018,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            231,
+            241
+          ],
+          "damage_probe_bbox": [
+            231,
+            200,
+            266,
+            246
+          ],
+          "obscuration_in_zone": 0.051357,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              59,
+              205,
+              231,
+              241
+            ],
+            "ocr_confidence": 0.9238,
+            "text": "QA-36714",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                231,
+                205
+              ],
+              [
+                231,
+                241
+              ],
+              [
+                59,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "QA-63714",
+        "rendered_target_value": "QA-36714",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_02_medium",
+      "source_id": "source_02",
+      "field_name": "id_number",
+      "corruption_type": "digit_transposition_63_to_36",
+      "severity": "medium",
+      "seed": 20261204,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_02/medium.png",
+        "sha256": "e2bf5cb16b84dc9a8ad0427e5998cf5783ef090d1eaf057ee5791cffb615937d",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_02/medium_occlusion.png",
+        "damage_mask_sha256": "fd65bc783bed920d5e7a40fe51aa07784bc9e71e24b089be1989e307242c53eb",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.132714,
+          "target_region_fraction_any": 0.050257,
+          "target_region_fraction_opaque": 0.033456
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.7808,
+        "ocr_runtime_seconds": 6.74,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2013,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:e2bf5cb16b84dc9a8ad0427e5998cf5783ef090d1eaf057ee5791cffb615937d"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.766,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "21 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "20.1% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "QA-36714",
+        "claimed_value": "QA-36714",
+        "ocr_confidence": 0.9998199840983287,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            57,
+            205,
+            230,
+            241
+          ],
+          "damage_probe_bbox": [
+            230,
+            200,
+            265,
+            246
+          ],
+          "obscuration_in_zone": 0.050844,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              57,
+              205,
+              230,
+              241
+            ],
+            "ocr_confidence": 0.9998,
+            "text": "QA-36714",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                205
+              ],
+              [
+                230,
+                205
+              ],
+              [
+                230,
+                241
+              ],
+              [
+                57,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "QA-63714",
+        "rendered_target_value": "QA-36714",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_02_severe",
+      "source_id": "source_02",
+      "field_name": "id_number",
+      "corruption_type": "digit_transposition_63_to_36",
+      "severity": "severe",
+      "seed": 20261205,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_02/severe.png",
+        "sha256": "2a7a72b1ce4be80213f7e36cba235cda49f91e383295ad7b52ccc2b595972758",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_02/severe_occlusion.png",
+        "damage_mask_sha256": "5687821452603d3697af9c7dcbd1a21e39cdadda20506fe709802b7276c3e7ea",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.98799,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.448202
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8332,
+        "ocr_runtime_seconds": 6.8,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.261,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:2a7a72b1ce4be80213f7e36cba235cda49f91e383295ad7b52ccc2b595972758"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.817,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "26.1% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 7,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "QA-63714",
+        "rendered_target_value": "QA-36714",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_03_clean",
+      "source_id": "source_03",
+      "field_name": "id_number",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261302,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_03/clean.png",
+        "sha256": "20d524d4b28ce04d1f64479ae9a0a06a0847d37f3e6f51e0f0dc9e5143494ca5",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_03/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.7184,
+        "ocr_runtime_seconds": 6.69,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1745,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:20d524d4b28ce04d1f64479ae9a0a06a0847d37f3e6f51e0f0dc9e5143494ca5"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.706,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "LM-29084",
+        "claimed_value": "LM-29084",
+        "ocr_confidence": 0.6773397947400837,
+        "confidence_bucket": "medium",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            61,
+            203,
+            231,
+            241
+          ],
+          "damage_probe_bbox": [
+            231,
+            198,
+            266,
+            246
+          ],
+          "obscuration_in_zone": 0.058731,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              61,
+              203,
+              231,
+              241
+            ],
+            "ocr_confidence": 0.6773,
+            "text": "LM-29084",
+            "usable": true,
+            "polygon": [
+              [
+                61,
+                203
+              ],
+              [
+                231,
+                203
+              ],
+              [
+                231,
+                241
+              ],
+              [
+                61,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "LM-29084",
+        "rendered_target_value": "LM-29084",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_03_mild",
+      "source_id": "source_03",
+      "field_name": "id_number",
+      "corruption_type": "valid_format_wrong_identifier",
+      "severity": "mild",
+      "seed": 20261303,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_03/mild.png",
+        "sha256": "b4e497b19c54c107dba608342e42cc9c018456a39741063a8381e7c9c18600ea",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_03/mild_occlusion.png",
+        "damage_mask_sha256": "c35726dedc508fc3ae90a4cdc21501fa7db275d4873798afe9c58336112c22c4",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.308554,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8455,
+        "ocr_runtime_seconds": 6.81,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1782,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:b4e497b19c54c107dba608342e42cc9c018456a39741063a8381e7c9c18600ea"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.83,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "17.8% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "QR-57139",
+        "claimed_value": "QR-57139",
+        "ocr_confidence": 0.5293485386747714,
+        "confidence_bucket": "medium",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            229,
+            241
+          ],
+          "damage_probe_bbox": [
+            229,
+            200,
+            264,
+            246
+          ],
+          "obscuration_in_zone": 0.053155,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              59,
+              205,
+              229,
+              241
+            ],
+            "ocr_confidence": 0.5293,
+            "text": "QR-57139",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                229,
+                205
+              ],
+              [
+                229,
+                241
+              ],
+              [
+                59,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "LM-29084",
+        "rendered_target_value": "QR-57139",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_03_medium",
+      "source_id": "source_03",
+      "field_name": "id_number",
+      "corruption_type": "valid_format_wrong_identifier",
+      "severity": "medium",
+      "seed": 20261304,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_03/medium.png",
+        "sha256": "706b830fd9971451659ac1cb631f46d0c26c6d9794f5388b3f4b360464c1bb22",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_03/medium_occlusion.png",
+        "damage_mask_sha256": "4ffd02a72df8997c4ee6cbb4b64ec0655632545353f34629f94665b65412de5b",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.122637,
+          "target_region_fraction_any": 0.050257,
+          "target_region_fraction_opaque": 0.028173
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6629,
+        "ocr_runtime_seconds": 6.63,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1956,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:706b830fd9971451659ac1cb631f46d0c26c6d9794f5388b3f4b360464c1bb22"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.649,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "21 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "19.6% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "QR-57139",
+        "claimed_value": "QR-57139",
+        "ocr_confidence": 0.798557501951968,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            57,
+            205,
+            231,
+            241
+          ],
+          "damage_probe_bbox": [
+            231,
+            200,
+            266,
+            246
+          ],
+          "obscuration_in_zone": 0.051577,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              57,
+              205,
+              231,
+              241
+            ],
+            "ocr_confidence": 0.7986,
+            "text": "QR-57139",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                205
+              ],
+              [
+                231,
+                205
+              ],
+              [
+                231,
+                241
+              ],
+              [
+                57,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "LM-29084",
+        "rendered_target_value": "QR-57139",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_03_severe",
+      "source_id": "source_03",
+      "field_name": "id_number",
+      "corruption_type": "valid_format_wrong_identifier",
+      "severity": "severe",
+      "seed": 20261305,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_03/severe.png",
+        "sha256": "b23dc7d5e80f8155472748606c48f832cb6123cb1c87c5e2b5b06185e620ea01",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_03/severe_occlusion.png",
+        "damage_mask_sha256": "c221eaf49a2672b19cec848295b60176104ca14b95396b435a04a62abbc43ebe",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.99723,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.461702
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.5573,
+        "ocr_runtime_seconds": 6.52,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.264,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:b23dc7d5e80f8155472748606c48f832cb6123cb1c87c5e2b5b06185e620ea01"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.541,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "14 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "26.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 7,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "LM-29084",
+        "rendered_target_value": "QR-57139",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_04_clean",
+      "source_id": "source_04",
+      "field_name": "dob",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261402,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_04/clean.png",
+        "sha256": "988bdb39b24f6a8046dbf05648d81f8616e1d7b90af8ff48aad2866c6939a1ed",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_04/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.5366,
+        "ocr_runtime_seconds": 6.51,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1745,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:988bdb39b24f6a8046dbf05648d81f8616e1d7b90af8ff48aad2866c6939a1ed"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.525,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "25 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.009,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "29 02 2000",
+        "claimed_value": "29 02 2000",
+        "ocr_confidence": 0.7265394202602379,
+        "confidence_bucket": "medium",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 8,
+          "tokens": 3,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": [
+            59,
+            269,
+            253,
+            305
+          ],
+          "damage_probe_bbox": [
+            253,
+            264,
+            288,
+            310
+          ],
+          "obscuration_in_zone": 0.064674,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_012",
+            "bbox": [
+              59,
+              269,
+              253,
+              305
+            ],
+            "ocr_confidence": 0.7265,
+            "text": "29 02 2000",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                269
+              ],
+              [
+                253,
+                269
+              ],
+              [
+                253,
+                305
+              ],
+              [
+                59,
+                305
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "29 02 2000",
+        "rendered_target_value": "29 02 2000",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_04_mild",
+      "source_id": "source_04",
+      "field_name": "dob",
+      "corruption_type": "valid_date_digit_substitution",
+      "severity": "mild",
+      "seed": 20261403,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_04/mild.png",
+        "sha256": "56edd8b2c39ddce1e9fce2aed0a55f4d01c19871330cc79e834e6faa35442046",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_04/mild_occlusion.png",
+        "damage_mask_sha256": "13c791b4bef310012519d71c34c737b1cfaeb15465499584f6a523799b98762b",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.351151,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8744,
+        "ocr_runtime_seconds": 6.84,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1787,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:56edd8b2c39ddce1e9fce2aed0a55f4d01c19871330cc79e834e6faa35442046"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.858,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "17.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "28 02 2000",
+        "claimed_value": "28 02 2000",
+        "ocr_confidence": 0.9752392398117854,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 8,
+          "tokens": 3,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": [
+            57,
+            269,
+            253,
+            305
+          ],
+          "damage_probe_bbox": [
+            253,
+            264,
+            288,
+            310
+          ],
+          "obscuration_in_zone": 0.06328,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_011",
+            "bbox": [
+              57,
+              269,
+              253,
+              305
+            ],
+            "ocr_confidence": 0.9752,
+            "text": "28 02 2000",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                269
+              ],
+              [
+                253,
+                269
+              ],
+              [
+                253,
+                305
+              ],
+              [
+                57,
+                305
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "29 02 2000",
+        "rendered_target_value": "28 02 2000",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_04_medium",
+      "source_id": "source_04",
+      "field_name": "dob",
+      "corruption_type": "valid_date_digit_substitution",
+      "severity": "medium",
+      "seed": 20261404,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_04/medium.png",
+        "sha256": "9862098ccd1e282c94865c40d6ed4e02a0056c5701472ccc34eacae79d823d65",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_04/medium_occlusion.png",
+        "damage_mask_sha256": "c9dcce2227b80b8aca0da0c50f882a3efa2506d32761b9417ed4229895e75a4f",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.126821,
+          "target_region_fraction_any": 0.471827,
+          "target_region_fraction_opaque": 0.432208
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8398,
+        "ocr_runtime_seconds": 6.8,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.199,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:9862098ccd1e282c94865c40d6ed4e02a0056c5701472ccc34eacae79d823d65"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.825,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "21 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "19.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 8,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "29 02 2000",
+        "rendered_target_value": "28 02 2000",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_04_severe",
+      "source_id": "source_04",
+      "field_name": "dob",
+      "corruption_type": "valid_date_digit_substitution",
+      "severity": "severe",
+      "seed": 20261405,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_04/severe.png",
+        "sha256": "fa7409cb2f4dfa66ab570782b6507ce594281ee94185a4a1f29ae269aafa7859",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_04/severe_occlusion.png",
+        "damage_mask_sha256": "5a7ab38148d15914c0d119c7ebdb5f54e6b82df869a15e6f348dfc8f06a25034",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.957273,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.475385
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.3945,
+        "ocr_runtime_seconds": 6.36,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2544,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:fa7409cb2f4dfa66ab570782b6507ce594281ee94185a4a1f29ae269aafa7859"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.38,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "25.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 1 partial, 4 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 8,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "29 02 2000",
+        "rendered_target_value": "28 02 2000",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_05_clean",
+      "source_id": "source_05",
+      "field_name": "dob",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261502,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_05/clean.png",
+        "sha256": "a6db2243b277f4d314ce6f89b2637a3547cd4a16e760ca269da1362c4adedede",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_05/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.4769,
+        "ocr_runtime_seconds": 6.45,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.174,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:a6db2243b277f4d314ce6f89b2637a3547cd4a16e760ca269da1362c4adedede"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.464,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "17 09 1994",
+        "claimed_value": "17 09 1994",
+        "ocr_confidence": 0.991381350073528,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 8,
+          "tokens": 3,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": [
+            59,
+            269,
+            253,
+            305
+          ],
+          "damage_probe_bbox": [
+            253,
+            264,
+            288,
+            310
+          ],
+          "obscuration_in_zone": 0.058804,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_011",
+            "bbox": [
+              59,
+              269,
+              253,
+              305
+            ],
+            "ocr_confidence": 0.9914,
+            "text": "17 09 1994",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                269
+              ],
+              [
+                253,
+                269
+              ],
+              [
+                253,
+                305
+              ],
+              [
+                59,
+                305
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "17 09 1994",
+        "rendered_target_value": "17 09 1994",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_05_mild",
+      "source_id": "source_05",
+      "field_name": "dob",
+      "corruption_type": "impossible_calendar_date",
+      "severity": "mild",
+      "seed": 20261503,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_05/mild.png",
+        "sha256": "a8e2053cbc040945b1acdcfb3362d6e2efb7ac923915e5b4dfe3cb5e1dbdf852",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_05/mild_occlusion.png",
+        "damage_mask_sha256": "9d8dde2c176d94f8a010f97b91c18035413b62fc713ed9bed949e4b2edf6b3db",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.348643,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 7.6747,
+        "ocr_runtime_seconds": 7.64,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1757,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:a8e2053cbc040945b1acdcfb3362d6e2efb7ac923915e5b4dfe3cb5e1dbdf852"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 7.661,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "17.6% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "31 02 1994",
+        "claimed_value": "31 02 1994",
+        "ocr_confidence": 0.9760321578137487,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 8,
+          "tokens": 3,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": [
+            57,
+            269,
+            253,
+            305
+          ],
+          "damage_probe_bbox": [
+            253,
+            264,
+            288,
+            310
+          ],
+          "obscuration_in_zone": 0.056603,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_011",
+            "bbox": [
+              57,
+              269,
+              253,
+              305
+            ],
+            "ocr_confidence": 0.976,
+            "text": "31 02 1994",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                269
+              ],
+              [
+                253,
+                269
+              ],
+              [
+                253,
+                305
+              ],
+              [
+                57,
+                305
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "17 09 1994",
+        "rendered_target_value": "31 02 1994",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_05_medium",
+      "source_id": "source_05",
+      "field_name": "dob",
+      "corruption_type": "impossible_calendar_date",
+      "severity": "medium",
+      "seed": 20261504,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_05/medium.png",
+        "sha256": "e9242f3518b9454187b75d053250227930c6cd5b70103790fb4ebff908e99fff",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_05/medium_occlusion.png",
+        "damage_mask_sha256": "1a1b13bb8cc6df48392bc3e4a23e31f767a04f36f14562f96257601daeba9702",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.121052,
+          "target_region_fraction_any": 0.472414,
+          "target_region_fraction_opaque": 0.439398
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.827,
+        "ocr_runtime_seconds": 6.79,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1938,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:e9242f3518b9454187b75d053250227930c6cd5b70103790fb4ebff908e99fff"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.812,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "21 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "19.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 8,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "17 09 1994",
+        "rendered_target_value": "31 02 1994",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_05_severe",
+      "source_id": "source_05",
+      "field_name": "dob",
+      "corruption_type": "impossible_calendar_date",
+      "severity": "severe",
+      "seed": 20261505,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_05/severe.png",
+        "sha256": "7b39e41c1dace3e3724c43f4fd903cfc983f585bd413696336c400e78489a47e",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_05/severe_occlusion.png",
+        "damage_mask_sha256": "61ff239c4adcabe3a6e80a471fcde658e05e45258505b5af78f75fb9eae9aad8",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.991817,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.487674
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.615,
+        "ocr_runtime_seconds": 6.58,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2579,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:7b39e41c1dace3e3724c43f4fd903cfc983f585bd413696336c400e78489a47e"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.599,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "25.8% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 8,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            263,
+            630,
+            310
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "17 09 1994",
+        "rendered_target_value": "31 02 1994",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_06_clean",
+      "source_id": "source_06",
+      "field_name": "name",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261602,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_06/clean.png",
+        "sha256": "71bea93e3df29aa66deecfe5d415467febbc3b8b3a322b9ed17f0b55c278807e",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_06/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.894,
+        "ocr_runtime_seconds": 6.87,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1749,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:71bea93e3df29aa66deecfe5d415467febbc3b8b3a322b9ed17f0b55c278807e"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.881,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "25 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "SANA IYER",
+        "claimed_value": "SANA IYER",
+        "ocr_confidence": 0.9202406539069005,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 5,
+          "tokens": 2,
+          "minimum_tokens": 2,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            132,
+            630,
+            179
+          ],
+          "evidence_bbox": [
+            60,
+            142,
+            242,
+            174
+          ],
+          "damage_probe_bbox": [
+            242,
+            138,
+            277,
+            178
+          ],
+          "obscuration_in_zone": 0.06515,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_006",
+            "bbox": [
+              60,
+              142,
+              242,
+              174
+            ],
+            "ocr_confidence": 0.9202,
+            "text": "SANA IYER",
+            "usable": true,
+            "polygon": [
+              [
+                60,
+                142
+              ],
+              [
+                242,
+                142
+              ],
+              [
+                242,
+                174
+              ],
+              [
+                60,
+                174
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "SANA IYER",
+        "rendered_target_value": "SANA IYER",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_06_mild",
+      "source_id": "source_06",
+      "field_name": "name",
+      "corruption_type": "plausible_wrong_name",
+      "severity": "mild",
+      "seed": 20261603,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_06/mild.png",
+        "sha256": "a6b584f41928f1fa46945fe6dd4711be8478042245f841c6c79120a081d6689e",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_06/mild_occlusion.png",
+        "damage_mask_sha256": "59ab8ad0d1db217d5fb46adaaedb49dc8672f9a470715b921e96def7b8ec87ce",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.343929,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 7.095,
+        "ocr_runtime_seconds": 7.06,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1788,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:a6b584f41928f1fa46945fe6dd4711be8478042245f841c6c79120a081d6689e"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 7.08,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "17.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "SANA IYAR",
+        "claimed_value": "SANA IYAR",
+        "ocr_confidence": 0.9990948304948124,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 5,
+          "tokens": 2,
+          "minimum_tokens": 2,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            132,
+            630,
+            179
+          ],
+          "evidence_bbox": [
+            60,
+            141,
+            244,
+            174
+          ],
+          "damage_probe_bbox": [
+            244,
+            137,
+            279,
+            178
+          ],
+          "obscuration_in_zone": 0.063426,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_006",
+            "bbox": [
+              60,
+              141,
+              244,
+              174
+            ],
+            "ocr_confidence": 0.9991,
+            "text": "SANA IYAR",
+            "usable": true,
+            "polygon": [
+              [
+                60,
+                141
+              ],
+              [
+                244,
+                141
+              ],
+              [
+                244,
+                174
+              ],
+              [
+                60,
+                174
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "SANA IYER",
+        "rendered_target_value": "SANA IYAR",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_06_medium",
+      "source_id": "source_06",
+      "field_name": "name",
+      "corruption_type": "plausible_wrong_name",
+      "severity": "medium",
+      "seed": 20261604,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_06/medium.png",
+        "sha256": "9c4aad3901da351efd385c5b60552c4db6ee8bdb20386e5836ca1d47915001ba",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_06/medium_occlusion.png",
+        "damage_mask_sha256": "479d55e00c903e5b02ed47a93bdda7402a302471933783e1873311808e171809",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.129708,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8006,
+        "ocr_runtime_seconds": 6.76,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2033,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:9c4aad3901da351efd385c5b60552c4db6ee8bdb20386e5836ca1d47915001ba"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.785,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "21 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "20.3% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "SANA IYAR",
+        "claimed_value": "SANA IYAR",
+        "ocr_confidence": 0.8705521740572452,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+          "pattern_valid": true,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 5,
+          "tokens": 2,
+          "minimum_tokens": 2,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            132,
+            630,
+            179
+          ],
+          "evidence_bbox": [
+            58,
+            142,
+            244,
+            174
+          ],
+          "damage_probe_bbox": [
+            244,
+            138,
+            279,
+            178
+          ],
+          "obscuration_in_zone": 0.061775,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_006",
+            "bbox": [
+              58,
+              142,
+              244,
+              174
+            ],
+            "ocr_confidence": 0.8706,
+            "text": "SANA IYAR",
+            "usable": true,
+            "polygon": [
+              [
+                58,
+                142
+              ],
+              [
+                244,
+                142
+              ],
+              [
+                244,
+                174
+              ],
+              [
+                58,
+                174
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "SANA IYER",
+        "rendered_target_value": "SANA IYAR",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_06_severe",
+      "source_id": "source_06",
+      "field_name": "name",
+      "corruption_type": "plausible_wrong_name",
+      "severity": "severe",
+      "seed": 20261605,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_06/severe.png",
+        "sha256": "70211ee2c42516aa1768f81d5b39448f9c38de67d13623dee08c025bca8a4403",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_06/severe_occlusion.png",
+        "damage_mask_sha256": "53718a211a384025b0afd7e09f1cdbe2f4aa0c79fd22702f8fd2599d91b6d292",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.968087,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.3292
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6118,
+        "ocr_runtime_seconds": 6.58,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2623,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:70211ee2c42516aa1768f81d5b39448f9c38de67d13623dee08c025bca8a4403"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.596,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "26.2% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "SANI",
+        "claimed_value": null,
+        "ocr_confidence": 0.5732366442680359,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+          "pattern_valid": true,
+          "alnum_characters": 4,
+          "minimum_alnum_characters": 5,
+          "tokens": 1,
+          "minimum_tokens": 2,
+          "truncation_marker": null,
+          "findings": [
+            "MINIMUM_ALNUM_CHARS_FAILED",
+            "MINIMUM_TOKENS_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            132,
+            630,
+            179
+          ],
+          "evidence_bbox": [
+            58,
+            142,
+            142,
+            174
+          ],
+          "damage_probe_bbox": [
+            142,
+            138,
+            177,
+            178
+          ],
+          "obscuration_in_zone": 0.305723,
+          "adjacent_obscuration": 0.858571
+        },
+        "reasons": [
+          "Observed text is shorter than the template expects for this field (4 of at least 5 characters).",
+          "Observed text has fewer parts than the template expects (1 of at least 2).",
+          "Damage begins immediately after the observed text (obscured 86% of the next 35 px, unbroken run 35 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_006",
+            "bbox": [
+              58,
+              142,
+              142,
+              174
+            ],
+            "ocr_confidence": 0.5732,
+            "text": "SANI",
+            "usable": true,
+            "polygon": [
+              [
+                58,
+                142
+              ],
+              [
+                142,
+                142
+              ],
+              [
+                142,
+                174
+              ],
+              [
+                58,
+                174
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "SANA IYER",
+        "rendered_target_value": "SANA IYAR",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_07_clean",
+      "source_id": "source_07",
+      "field_name": "district",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261702,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_07/clean.png",
+        "sha256": "3c48e28ba366e861de4889e34c7d9f55f270cd4c34e7e700d6f0ebb9fac17e06",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_07/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.7362,
+        "ocr_runtime_seconds": 6.71,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1749,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:3c48e28ba366e861de4889e34c7d9f55f270cd4c34e7e700d6f0ebb9fac17e06"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.724,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "WESTHAVEN",
+        "claimed_value": "WESTHAVEN",
+        "ocr_confidence": 0.8931974152506568,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+          "pattern_valid": true,
+          "alnum_characters": 9,
+          "minimum_alnum_characters": 5,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            327,
+            630,
+            375
+          ],
+          "evidence_bbox": [
+            60,
+            336,
+            274,
+            368
+          ],
+          "damage_probe_bbox": [
+            274,
+            332,
+            309,
+            372
+          ],
+          "obscuration_in_zone": 0.074425,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_013",
+            "bbox": [
+              60,
+              336,
+              274,
+              368
+            ],
+            "ocr_confidence": 0.8932,
+            "text": "WESTHAVEN",
+            "usable": true,
+            "polygon": [
+              [
+                60,
+                336
+              ],
+              [
+                274,
+                336
+              ],
+              [
+                274,
+                368
+              ],
+              [
+                60,
+                368
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "WESTHAVEN",
+        "rendered_target_value": "WESTHAVEN",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_07_mild",
+      "source_id": "source_07",
+      "field_name": "district",
+      "corruption_type": "plausible_wrong_district",
+      "severity": "mild",
+      "seed": 20261703,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_07/mild.png",
+        "sha256": "72fbaf3f71536dfbcb37f660c4022d3f3a4fd8045eab6c4dc7fc89b09b512411",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_07/mild_occlusion.png",
+        "damage_mask_sha256": "0a5dfa9fdc8c425f6a5b25bd5185ed066c60c32aed22a6257669983aed897eeb",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.342248,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8169,
+        "ocr_runtime_seconds": 6.78,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1772,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:72fbaf3f71536dfbcb37f660c4022d3f3a4fd8045eab6c4dc7fc89b09b512411"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.803,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "17.7% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "NORTHVALE",
+        "claimed_value": "NORTHVALE",
+        "ocr_confidence": 0.9998574206073557,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+          "pattern_valid": true,
+          "alnum_characters": 9,
+          "minimum_alnum_characters": 5,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            327,
+            630,
+            375
+          ],
+          "evidence_bbox": [
+            59,
+            335,
+            267,
+            371
+          ],
+          "damage_probe_bbox": [
+            267,
+            330,
+            302,
+            376
+          ],
+          "obscuration_in_zone": 0.069253,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_013",
+            "bbox": [
+              59,
+              335,
+              267,
+              371
+            ],
+            "ocr_confidence": 0.9999,
+            "text": "NORTHVALE",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                335
+              ],
+              [
+                267,
+                335
+              ],
+              [
+                267,
+                371
+              ],
+              [
+                59,
+                371
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "WESTHAVEN",
+        "rendered_target_value": "NORTHVALE",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "FALSE_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_07_medium",
+      "source_id": "source_07",
+      "field_name": "district",
+      "corruption_type": "plausible_wrong_district",
+      "severity": "medium",
+      "seed": 20261704,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_07/medium.png",
+        "sha256": "40bf124c54ea763dc0968a048521182f48be721ee9f1be6ab44255604e18a9cc",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_07/medium_occlusion.png",
+        "damage_mask_sha256": "baafab546292b814dc90ff02ecf432f67fff6310d696ee1463e91566b8e31c82",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.124537,
+          "target_region_fraction_any": 0.33283,
+          "target_region_fraction_opaque": 0.31796
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.9239,
+        "ocr_runtime_seconds": 6.89,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.199,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:40bf124c54ea763dc0968a048521182f48be721ee9f1be6ab44255604e18a9cc"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.908,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "22 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "19.9% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "NORT",
+        "claimed_value": null,
+        "ocr_confidence": 0.999822735786438,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+          "pattern_valid": true,
+          "alnum_characters": 4,
+          "minimum_alnum_characters": 5,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [
+            "MINIMUM_ALNUM_CHARS_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            327,
+            630,
+            375
+          ],
+          "evidence_bbox": [
+            60,
+            336,
+            158,
+            368
+          ],
+          "damage_probe_bbox": [
+            158,
+            332,
+            193,
+            372
+          ],
+          "obscuration_in_zone": 0.312751,
+          "adjacent_obscuration": 0.872143
+        },
+        "reasons": [
+          "Observed text is shorter than the template expects for this field (4 of at least 5 characters).",
+          "Damage begins immediately after the observed text (obscured 87% of the next 35 px, unbroken run 29 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_011",
+            "bbox": [
+              60,
+              336,
+              158,
+              368
+            ],
+            "ocr_confidence": 0.9998,
+            "text": "NORT",
+            "usable": true,
+            "polygon": [
+              [
+                60,
+                336
+              ],
+              [
+                158,
+                336
+              ],
+              [
+                158,
+                368
+              ],
+              [
+                60,
+                368
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "WESTHAVEN",
+        "rendered_target_value": "NORTHVALE",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_07_severe",
+      "source_id": "source_07",
+      "field_name": "district",
+      "corruption_type": "plausible_wrong_district",
+      "severity": "severe",
+      "seed": 20261705,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_07/severe.png",
+        "sha256": "9f745320a84bb09e6efd27a734de7f8bb8221d7b3c1a8287bcc62579c4d782bd",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_07/severe_occlusion.png",
+        "damage_mask_sha256": "3688383176a3f571ab210b3d1f71b6afcfae498bc2ab941555894fb1a95405e6",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 1.0,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.512033
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6198,
+        "ocr_runtime_seconds": 6.59,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.267,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:9f745320a84bb09e6efd27a734de7f8bb8221d7b3c1a8287bcc62579c4d782bd"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.606,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "26.7% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 5,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            327,
+            630,
+            375
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "WESTHAVEN",
+        "rendered_target_value": "NORTHVALE",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_08_clean",
+      "source_id": "source_08",
+      "field_name": "address",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261802,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_08/clean.png",
+        "sha256": "3e5b91477ed52a5eb60d72c45146a7d02bc4103aacc6c8a04150217a74616071",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_08/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8656,
+        "ocr_runtime_seconds": 6.84,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1742,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:3e5b91477ed52a5eb60d72c45146a7d02bc4103aacc6c8a04150217a74616071"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.853,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.009,
+            "detail": "17.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "23 HILL ROAD, WARD 2",
+        "claimed_value": "23 HILL ROAD, WARD 2",
+        "ocr_confidence": 0.9874810016307838,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 15,
+          "minimum_alnum_characters": 12,
+          "tokens": 5,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            399,
+            443
+          ],
+          "damage_probe_bbox": [
+            399,
+            402,
+            434,
+            448
+          ],
+          "obscuration_in_zone": 0.085345,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_016",
+            "bbox": [
+              57,
+              407,
+              399,
+              443
+            ],
+            "ocr_confidence": 0.9875,
+            "text": "23 HILL ROAD, WARD 2",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                399,
+                407
+              ],
+              [
+                399,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "23 HILL ROAD, WARD 2",
+        "rendered_target_value": "23 HILL ROAD, WARD 2",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_08_mild",
+      "source_id": "source_08",
+      "field_name": "address",
+      "corruption_type": "address_O_to_0_confusion",
+      "severity": "mild",
+      "seed": 20261803,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_08/mild.png",
+        "sha256": "1eb0a3739896ca3b7415b722e4da8efee1e132372c6262371efd0a9f05b85a3e",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_08/mild_occlusion.png",
+        "damage_mask_sha256": "9c698ebe7f68ab21978915f1b165cae75133e2ce25f057ffd447f679f7244ac7",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.319343,
+          "target_region_fraction_any": 0.075241,
+          "target_region_fraction_opaque": 0.045034
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8312,
+        "ocr_runtime_seconds": 6.79,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1737,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:1eb0a3739896ca3b7415b722e4da8efee1e132372c6262371efd0a9f05b85a3e"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.816,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "17.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.001,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "23 HILL ROAD, WARD 2",
+        "claimed_value": null,
+        "ocr_confidence": 0.9856802205079976,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 15,
+          "minimum_alnum_characters": 12,
+          "tokens": 5,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            397,
+            443
+          ],
+          "damage_probe_bbox": [
+            397,
+            402,
+            432,
+            448
+          ],
+          "obscuration_in_zone": 0.100759,
+          "adjacent_obscuration": 0.349689
+        },
+        "reasons": [
+          "Damage begins immediately after the observed text (obscured 35% of the next 35 px, unbroken run 20 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_016",
+            "bbox": [
+              57,
+              407,
+              397,
+              443
+            ],
+            "ocr_confidence": 0.9857,
+            "text": "23 HILL ROAD, WARD 2",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                397,
+                407
+              ],
+              [
+                397,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "23 HILL ROAD, WARD 2",
+        "rendered_target_value": "23 HILL R0AD, WARD 2",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": false,
+        "outcome": "INCORRECT_REJECTION"
+      }
+    },
+    {
+      "case_id": "source_08_medium",
+      "source_id": "source_08",
+      "field_name": "address",
+      "corruption_type": "plausible_wrong_address",
+      "severity": "medium",
+      "seed": 20261804,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_08/medium.png",
+        "sha256": "55341d7004e81cd55de17c2c0c8a3a523510af232dd9db365a664884b101138d",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_08/medium_occlusion.png",
+        "damage_mask_sha256": "7c2c5d949887598da965796770d6b7f455d3d7901156c89de4289e39b1b3a57b",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.11924,
+          "target_region_fraction_any": 0.139483,
+          "target_region_fraction_opaque": 0.088448
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 7.0255,
+        "ocr_runtime_seconds": 6.99,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1941,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:55341d7004e81cd55de17c2c0c8a3a523510af232dd9db365a664884b101138d"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 7.009,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "22 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "19.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "23 HILL ROAD, WARD",
+        "claimed_value": null,
+        "ocr_confidence": 0.7773881227727076,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 14,
+          "minimum_alnum_characters": 12,
+          "tokens": 4,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            375,
+            443
+          ],
+          "damage_probe_bbox": [
+            375,
+            402,
+            410,
+            448
+          ],
+          "obscuration_in_zone": 0.133276,
+          "adjacent_obscuration": 0.325466
+        },
+        "reasons": [
+          "Damage begins immediately after the observed text (obscured 33% of the next 35 px, unbroken run 14 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_014",
+            "bbox": [
+              57,
+              407,
+              375,
+              443
+            ],
+            "ocr_confidence": 0.7774,
+            "text": "23 HILL ROAD, WARD",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                375,
+                407
+              ],
+              [
+                375,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "23 HILL ROAD, WARD 2",
+        "rendered_target_value": "23 HILL ROAD, WARD 3",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_08_severe",
+      "source_id": "source_08",
+      "field_name": "address",
+      "corruption_type": "plausible_wrong_address",
+      "severity": "severe",
+      "seed": 20261805,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_08/severe.png",
+        "sha256": "405fe7af72812f2ac9c288ed7a136f5e01a507b38672ab4a56236afca357d174",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_08/severe_occlusion.png",
+        "damage_mask_sha256": "ad8d7b207872ad14ed511dbb2b2b4d6788c8b0e84fce7069fab3b6f75637c4ff",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.931019,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.276069
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6377,
+        "ocr_runtime_seconds": 6.6,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2503,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:405fe7af72812f2ac9c288ed7a136f5e01a507b38672ab4a56236afca357d174"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.621,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.014,
+            "detail": "25.0% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "24 HILL ROAD, W",
+        "claimed_value": null,
+        "ocr_confidence": 0.9121749506657204,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 11,
+          "minimum_alnum_characters": 12,
+          "tokens": 4,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [
+            "MINIMUM_ALNUM_CHARS_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            317,
+            443
+          ],
+          "damage_probe_bbox": [
+            317,
+            402,
+            352,
+            448
+          ],
+          "obscuration_in_zone": 0.275862,
+          "adjacent_obscuration": 0.976398
+        },
+        "reasons": [
+          "Observed text is shorter than the template expects for this field (11 of at least 12 characters).",
+          "Damage begins immediately after the observed text (obscured 98% of the next 35 px, unbroken run 35 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_008",
+            "bbox": [
+              57,
+              407,
+              317,
+              443
+            ],
+            "ocr_confidence": 0.9122,
+            "text": "24 HILL ROAD, W",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                317,
+                407
+              ],
+              [
+                317,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "23 HILL ROAD, WARD 2",
+        "rendered_target_value": "24 HILL ROAD, WARD 2",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_09_clean",
+      "source_id": "source_09",
+      "field_name": "id_number",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20261902,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_09/clean.png",
+        "sha256": "b8e2bcf69e945cd3d38748fe3fc5e37027ac8c0482795913418c049498713464",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_09/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.6663,
+        "ocr_runtime_seconds": 6.63,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1747,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:b8e2bcf69e945cd3d38748fe3fc5e37027ac8c0482795913418c049498713464"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.654,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "YC-73519",
+        "claimed_value": "YC-73519",
+        "ocr_confidence": 0.9992166580088461,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": true,
+          "alnum_characters": 7,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            58,
+            202,
+            225,
+            242
+          ],
+          "damage_probe_bbox": [
+            225,
+            196,
+            260,
+            248
+          ],
+          "obscuration_in_zone": 0.046992,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              58,
+              202,
+              225,
+              242
+            ],
+            "ocr_confidence": 0.9992,
+            "text": "YC-73519",
+            "usable": true,
+            "polygon": [
+              [
+                58,
+                202
+              ],
+              [
+                225,
+                202
+              ],
+              [
+                225,
+                242
+              ],
+              [
+                58,
+                242
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "YC-73519",
+        "rendered_target_value": "YC-73519",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_09_mild",
+      "source_id": "source_09",
+      "field_name": "id_number",
+      "corruption_type": "deletion",
+      "severity": "mild",
+      "seed": 20261903,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_09/mild.png",
+        "sha256": "2caf27bc9643ea0016bb7db21488024c9100158cecc705c810f1e2dc4f8cbc8c",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_09/mild_occlusion.png",
+        "damage_mask_sha256": "4add92bdbb9359a0346e92409fadfdd5725bf3905e71b3776e2fa3f9ec08fbe1",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.338448,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.865,
+        "ocr_runtime_seconds": 6.83,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1767,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:2caf27bc9643ea0016bb7db21488024c9100158cecc705c810f1e2dc4f8cbc8c"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.85,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.011,
+            "detail": "17.7% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "YC-7359",
+        "claimed_value": null,
+        "ocr_confidence": 0.36526351523428885,
+        "confidence_bucket": "low",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": false,
+          "alnum_characters": 6,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [
+            "MINIMUM_ALNUM_CHARS_FAILED",
+            "PATTERN_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            59,
+            205,
+            203,
+            241
+          ],
+          "damage_probe_bbox": [
+            203,
+            200,
+            238,
+            246
+          ],
+          "obscuration_in_zone": 0.039508,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Observed text is shorter than the template expects for this field (6 of at least 7 characters).",
+          "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+          "OCR confidence for the surviving text is low (0.37); the glyphs themselves are not reliable evidence.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_009",
+            "bbox": [
+              59,
+              205,
+              203,
+              241
+            ],
+            "ocr_confidence": 0.3653,
+            "text": "YC-7359",
+            "usable": true,
+            "polygon": [
+              [
+                59,
+                205
+              ],
+              [
+                203,
+                205
+              ],
+              [
+                203,
+                241
+              ],
+              [
+                59,
+                241
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "YC-73519",
+        "rendered_target_value": "YC-7359",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_09_medium",
+      "source_id": "source_09",
+      "field_name": "id_number",
+      "corruption_type": "insertion",
+      "severity": "medium",
+      "seed": 20261904,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_09/medium.png",
+        "sha256": "8ee9d159f400a360a85b3c543d2def824aaed302df309b6e2554106a5358b1ec",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_09/medium_occlusion.png",
+        "damage_mask_sha256": "f30b575337e3977d239e4211ceb374b5020c385b1e9e61b10de1a948dfb2fd40",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.12484,
+          "target_region_fraction_any": 0.044167,
+          "target_region_fraction_opaque": 0.030301
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.8351,
+        "ocr_runtime_seconds": 6.8,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2021,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:8ee9d159f400a360a85b3c543d2def824aaed302df309b6e2554106a5358b1ec"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.819,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "22 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.013,
+            "detail": "20.2% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "1 recovered, 3 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "YC-735199",
+        "claimed_value": null,
+        "ocr_confidence": 0.9030032041737797,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": false,
+          "alnum_characters": 8,
+          "minimum_alnum_characters": 7,
+          "tokens": 1,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [
+            "PATTERN_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": [
+            57,
+            203,
+            245,
+            241
+          ],
+          "damage_probe_bbox": [
+            245,
+            198,
+            280,
+            246
+          ],
+          "obscuration_in_zone": 0.052348,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_010",
+            "bbox": [
+              57,
+              203,
+              245,
+              241
+            ],
+            "ocr_confidence": 0.903,
+            "text": "YC-735199",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                203
+              ],
+              [
+                245,
+                203
+              ],
+              [
+                245,
+                241
+              ],
+              [
+                57,
+                241
+              ]
+            ]
+          },
+          {
+            "observation_id": "obs_008",
+            "bbox": [
+              253,
+              181,
+              319,
+              251
+            ],
+            "ocr_confidence": 0.1147,
+            "text": "6",
+            "usable": false,
+            "polygon": [
+              [
+                253,
+                181
+              ],
+              [
+                319,
+                181
+              ],
+              [
+                319,
+                251
+              ],
+              [
+                253,
+                251
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "YC-73519",
+        "rendered_target_value": "YC-735199",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_09_severe",
+      "source_id": "source_09",
+      "field_name": "id_number",
+      "corruption_type": "truncation",
+      "severity": "severe",
+      "seed": 20261905,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_09/severe.png",
+        "sha256": "45cabf882ee386d3ec99f73946e765f67e01a8402b440c6d7b24b3098fe7f3f3",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_09/severe_occlusion.png",
+        "damage_mask_sha256": "e357e223ec9b88068b6e7ea9e10048b6f072546c4304a34e2895bd9737e08530",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.998232,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.437454
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.534,
+        "ocr_runtime_seconds": 6.5,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2599,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:45cabf882ee386d3ec99f73946e765f67e01a8402b440c6d7b24b3098fe7f3f3"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.519,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "15 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "26.0% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "UNRECOVERABLE",
+        "observed_value": null,
+        "claimed_value": null,
+        "ocr_confidence": null,
+        "confidence_bucket": "none",
+        "needs_verification": true,
+        "validation": {
+          "result": "UNKNOWN",
+          "pattern": "^[A-Z]{2}-[0-9]{5}$",
+          "pattern_valid": null,
+          "alnum_characters": 0,
+          "minimum_alnum_characters": 7,
+          "tokens": 0,
+          "minimum_tokens": 1,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "No mapped OCR text; semantic correctness is not inferred."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            198,
+            630,
+            245
+          ],
+          "evidence_bbox": null,
+          "damage_probe_bbox": null,
+          "obscuration_in_zone": 0.0,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "No OCR observation overlaps this field's value region: the area is unreadable or the column could not be located."
+        ],
+        "evidence": []
+      },
+      "evaluation": {
+        "ground_truth": "YC-73519",
+        "rendered_target_value": "YC-735...",
+        "rendered_value_differs_from_ground_truth": true,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_10_clean",
+      "source_id": "source_10",
+      "field_name": "address",
+      "corruption_type": "none",
+      "severity": "clean",
+      "seed": 20262002,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_10/clean.png",
+        "sha256": "75ddac96828eede3950e5c8edfc9af4d2111ceccf704e8f1a05a4766919d1428",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_10/clean_occlusion.png",
+        "damage_mask_sha256": "f106ce3b8db069953e24da79c924d4ec3550d62dfecbdd86e865ef3e5a7479dd",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.0,
+          "target_region_fraction_any": 0.0,
+          "target_region_fraction_opaque": 0.0
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.7312,
+        "ocr_runtime_seconds": 6.71,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1746,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:75ddac96828eede3950e5c8edfc9af4d2111ceccf704e8f1a05a4766919d1428"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.719,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "24 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.009,
+            "detail": "17.5% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5 recovered, 0 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "RECOVERED",
+        "observed_value": "88 PARK STREET, BLOCK 4",
+        "claimed_value": "88 PARK STREET, BLOCK 4",
+        "ocr_confidence": 0.8495096449392274,
+        "confidence_bucket": "high",
+        "needs_verification": false,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 18,
+          "minimum_alnum_characters": 12,
+          "tokens": 5,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            443,
+            443
+          ],
+          "damage_probe_bbox": [
+            443,
+            402,
+            478,
+            448
+          ],
+          "obscuration_in_zone": 0.102414,
+          "adjacent_obscuration": 0.0
+        },
+        "reasons": [
+          "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_016",
+            "bbox": [
+              57,
+              407,
+              443,
+              443
+            ],
+            "ocr_confidence": 0.8495,
+            "text": "88 PARK STREET, BLOCK 4",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                443,
+                407
+              ],
+              [
+                443,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "88 PARK STREET, BLOCK 4",
+        "rendered_target_value": "88 PARK STREET, BLOCK 4",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": true,
+        "ocr_matches_rendered_target": true,
+        "outcome": "CORRECT_RECOVERY"
+      }
+    },
+    {
+      "case_id": "source_10_mild",
+      "source_id": "source_10",
+      "field_name": "address",
+      "corruption_type": "blur",
+      "severity": "mild",
+      "seed": 20262003,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_10/mild.png",
+        "sha256": "6bb66b1bbd3e64dedac85fe944fe6d54dd1483906aeb575eca26ba22df9b99f8",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_10/mild_occlusion.png",
+        "damage_mask_sha256": "f28ee47f81928ee917505165fd2e0764ea75b8dd978f1472b85a5d7e72b427c2",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.310246,
+          "target_region_fraction_any": 0.176207,
+          "target_region_fraction_opaque": 0.122793
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 7.2645,
+        "ocr_runtime_seconds": 7.23,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1769,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:6bb66b1bbd3e64dedac85fe944fe6d54dd1483906aeb575eca26ba22df9b99f8"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 7.25,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "26 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "17.7% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "5/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4 recovered, 1 partial, 0 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "88 PARK STREET, BLOC",
+        "claimed_value": null,
+        "ocr_confidence": 0.7292945810761725,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "PASS",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 16,
+          "minimum_alnum_characters": 12,
+          "tokens": 4,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            57,
+            407,
+            399,
+            443
+          ],
+          "damage_probe_bbox": [
+            399,
+            402,
+            434,
+            448
+          ],
+          "obscuration_in_zone": 0.171,
+          "adjacent_obscuration": 0.708696
+        },
+        "reasons": [
+          "Damage begins immediately after the observed text (obscured 71% of the next 35 px, unbroken run 34 px), so the printed value may continue into an unreadable area.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_016",
+            "bbox": [
+              57,
+              407,
+              399,
+              443
+            ],
+            "ocr_confidence": 0.7293,
+            "text": "88 PARK STREET, BLOC",
+            "usable": true,
+            "polygon": [
+              [
+                57,
+                407
+              ],
+              [
+                399,
+                407
+              ],
+              [
+                399,
+                443
+              ],
+              [
+                57,
+                443
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "88 PARK STREET, BLOCK 4",
+        "rendered_target_value": "88 PARK STREET, BLOCK 4",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_10_medium",
+      "source_id": "source_10",
+      "field_name": "address",
+      "corruption_type": "fade_contrast_loss_and_scratch",
+      "severity": "medium",
+      "seed": 20262004,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_10/medium.png",
+        "sha256": "b04341d4a10d5d8a586ff2daea61f7b042f8e0b19f5231488ec25127d28491a7",
+        "format": "PNG",
+        "damage_mask_path": "evaluation/image_level_assets/source_10/medium_occlusion.png",
+        "damage_mask_sha256": "37fad4485963e54b0e4c57e773e45efd336c5cb12dd5f70aee234b968986e377",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.132183,
+          "target_region_fraction_any": 0.293138,
+          "target_region_fraction_opaque": 0.215931
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 7.163,
+        "ocr_runtime_seconds": 7.13,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.1532,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.001,
+            "detail": "sha256:b04341d4a10d5d8a586ff2daea61f7b042f8e0b19f5231488ec25127d28491a7"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 7.148,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "22 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.012,
+            "detail": "15.3% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "4/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2 recovered, 2 partial, 1 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "88 PARR STREET BLOC_",
+        "claimed_value": null,
+        "ocr_confidence": 0.3564589776518616,
+        "confidence_bucket": "low",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": false,
+          "alnum_characters": 16,
+          "minimum_alnum_characters": 12,
+          "tokens": 4,
+          "minimum_tokens": 3,
+          "truncation_marker": "_",
+          "findings": [
+            "PATTERN_FAILED",
+            "TRUNCATION_MARKER_PRESENT"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            58,
+            410,
+            400,
+            442
+          ],
+          "damage_probe_bbox": [
+            400,
+            406,
+            435,
+            446
+          ],
+          "obscuration_in_zone": 0.136793,
+          "adjacent_obscuration": 0.678571
+        },
+        "reasons": [
+          "Observed text does not satisfy the expected pattern for this field (^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$).",
+          "Observed text ends with the truncation marker '_', so the printed value probably continued beyond what is legible.",
+          "Damage begins immediately after the observed text (obscured 68% of the next 35 px, unbroken run 35 px), so the printed value may continue into an unreadable area.",
+          "OCR confidence for the surviving text is low (0.36); the glyphs themselves are not reliable evidence.",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_014",
+            "bbox": [
+              58,
+              410,
+              400,
+              442
+            ],
+            "ocr_confidence": 0.3565,
+            "text": "88 PARR STREET BLOC_",
+            "usable": true,
+            "polygon": [
+              [
+                58,
+                410
+              ],
+              [
+                400,
+                410
+              ],
+              [
+                400,
+                442
+              ],
+              [
+                58,
+                442
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "88 PARK STREET, BLOCK 4",
+        "rendered_target_value": "88 PARK STREET, BLOCK 4",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    },
+    {
+      "case_id": "source_10_severe",
+      "source_id": "source_10",
+      "field_name": "address",
+      "corruption_type": "jpeg_compression_and_occlusion",
+      "severity": "severe",
+      "seed": 20262005,
+      "preprocessing_variant": "default_pipeline_preprocessing",
+      "image": {
+        "path": "evaluation/image_level_assets/source_10/severe.jpg",
+        "sha256": "32e0f7fdfa51dc4eab07be77889233fd1f89c7a467e02fb414103aecca38d5f3",
+        "format": "JPEG",
+        "damage_mask_path": "evaluation/image_level_assets/source_10/severe_occlusion.png",
+        "damage_mask_sha256": "e1f8123e1dd30542d2635ba6a9821490b5e92a9a727ca4210cf99a4a106d3f0a",
+        "synthetic_damage_mask": {
+          "page_fraction_any": 0.939357,
+          "target_region_fraction_any": 1.0,
+          "target_region_fraction_opaque": 0.549966
+        }
+      },
+      "pipeline": {
+        "ok": true,
+        "error": null,
+        "runtime_seconds": 6.5529,
+        "ocr_runtime_seconds": 6.53,
+        "ocr_engine": "EasyOCR",
+        "preprocess_steps": [
+          "grayscale",
+          "CLAHE contrast",
+          "bilateral denoise"
+        ],
+        "page_obscured_fraction_detected": 0.2737,
+        "stages": [
+          {
+            "key": "hash",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "sha256:32e0f7fdfa51dc4eab07be77889233fd1f89c7a467e02fb414103aecca38d5f3"
+          },
+          {
+            "key": "image",
+            "ok": true,
+            "seconds": 6.54,
+            "detail": "1000x630 px; grayscale, CLAHE contrast, bilateral denoise"
+          },
+          {
+            "key": "ocr",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "14 raw observations (EasyOCR)"
+          },
+          {
+            "key": "damage",
+            "ok": true,
+            "seconds": 0.01,
+            "detail": "27.4% of the page has no legible structure"
+          },
+          {
+            "key": "mapping",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "2/5 fields have candidate evidence regions"
+          },
+          {
+            "key": "classify",
+            "ok": true,
+            "seconds": 0.0,
+            "detail": "0 recovered, 2 partial, 3 unrecoverable"
+          },
+          {
+            "key": "ai",
+            "ok": false,
+            "seconds": 0.0,
+            "detail": "AI commentary disabled for this run."
+          }
+        ]
+      },
+      "field_result": {
+        "status": "PARTIAL",
+        "observed_value": "88 PARK STREE",
+        "claimed_value": null,
+        "ocr_confidence": 0.8209824256110366,
+        "confidence_bucket": "medium",
+        "needs_verification": true,
+        "validation": {
+          "result": "FAIL",
+          "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+          "pattern_valid": true,
+          "alnum_characters": 11,
+          "minimum_alnum_characters": 12,
+          "tokens": 3,
+          "minimum_tokens": 3,
+          "truncation_marker": null,
+          "findings": [
+            "MINIMUM_ALNUM_CHARS_FAILED"
+          ],
+          "note": "These are the current template shape checks, not proof of semantic correctness."
+        },
+        "damage_evidence": {
+          "field_region_bbox": [
+            50,
+            401,
+            630,
+            451
+          ],
+          "evidence_bbox": [
+            56,
+            410,
+            288,
+            440
+          ],
+          "damage_probe_bbox": [
+            288,
+            406,
+            323,
+            444
+          ],
+          "obscuration_in_zone": 0.564586,
+          "adjacent_obscuration": 0.640602
+        },
+        "reasons": [
+          "Observed text is shorter than the template expects for this field (11 of at least 12 characters).",
+          "Damage begins immediately after the observed text (obscured 64% of the next 35 px, unbroken run 32 px), so the printed value may continue into an unreadable area.",
+          "56% of this field's value region is obscured (limit 35%).",
+          "The complete value cannot be established from this document, so no value is reported."
+        ],
+        "evidence": [
+          {
+            "observation_id": "obs_007",
+            "bbox": [
+              56,
+              410,
+              288,
+              440
+            ],
+            "ocr_confidence": 0.821,
+            "text": "88 PARK STREE",
+            "usable": true,
+            "polygon": [
+              [
+                56,
+                410
+              ],
+              [
+                288,
+                410
+              ],
+              [
+                288,
+                440
+              ],
+              [
+                56,
+                440
+              ]
+            ]
+          }
+        ]
+      },
+      "evaluation": {
+        "ground_truth": "88 PARK STREET, BLOCK 4",
+        "rendered_target_value": "88 PARK STREET, BLOCK 4",
+        "rendered_value_differs_from_ground_truth": false,
+        "ocr_matches_ground_truth": false,
+        "ocr_matches_rendered_target": false,
+        "outcome": "CORRECT_ABSTENTION"
+      }
+    }
+  ]
+}
