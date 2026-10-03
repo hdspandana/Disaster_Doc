@@ -79,15 +79,14 @@ and never:
 
 Three rules make that separation real rather than rhetorical:
 
-1. **Only deterministic code assigns a status or a value.** Regexes, template regions,
-   bounding-box geometry and a pixel-level damage map. See `src/classifier.py`.
-2. **A PARTIAL or UNRECOVERABLE field has `value: null`.** Structurally, not
-   conventionally. A partial reading is never promoted to a value, no matter how
-   convincing it looks. This is asserted in the test suite.
-3. **The AI layer can only write into one slot.** `ai_commentary`. If a model returns a
-   `value` or `status` key, it is dropped and the attempt is logged in the report's
-   `ai_guardrail_notes`. The app runs the whole pipeline — statuses, evidence, exports —
-   with no AI key at all.
+1. **Only deterministic code assigns a status or a claimed value.** Regexes, template
+   regions, bounding-box geometry and a pixel-level damage map. See `src/classifier.py`.
+2. **A PARTIAL or UNRECOVERABLE field has `claimed_value: null`.** The legacy JSON
+   `value` alias remains null too. An observed fragment is never promoted into a claim,
+   no matter how convincing it looks. This is asserted in the test suite.
+3. **The AI layer can only write into one slot.** `ai_commentary`. Attempts to return an
+   observation, claim, status, reason code, validation or damage evidence are ignored and
+   logged by key in `ai_guardrail_notes`. The app runs the pipeline without an AI key.
 
 The AI is used for wording: explaining why a field is partial, phrasing a verification
 instruction, and listing possible readings of a fragment in a slot labelled
@@ -149,14 +148,23 @@ Mapped to files:
 
 ## 6. What the statuses mean
 
-| Status | Meaning | `value` |
+| Status | Meaning | `claimed_value` (`value` legacy alias) |
 |---|---|---|
-| 🟢 **RECOVERED** | Usable OCR evidence exists, it satisfies the template's expected pattern, it is not truncated, and the surrounding region is readable. | the observed text, verbatim |
-| 🟡 **PARTIAL** | Some usable evidence exists, but the complete value cannot safely be established — the fragment is too short, damaged paper begins immediately after it, the region is largely obscured, or the OCR confidence is too low. | `null` |
+| 🟢 **RECOVERED** | A complete OCR transcription passes the current format, truncation, readability, and evidence-quality checks. Conflicting usable readings over overlapping pixels are not recovered. | the transcription, copied verbatim from OCR evidence |
+| 🟡 **PARTIAL** | Some usable evidence exists, but the complete value cannot safely be established — for example, a fragment, damage, low OCR confidence, or conflicting overlapping OCR readings. | `null`; `observed_value` may still contain a fragment |
 | 🔴 **UNRECOVERABLE** | There is no usable evidence for the field: the area is unreadable, no observation overlaps the value region, or only sub-threshold observations were found. | `null` |
 
-The rules are in one place (`src/classifier.py`) and every decision is written into the
-report as a plain-language reason, so a reviewer can audit *why* a field was downgraded.
+`RECOVERED` is an OCR transcription, not independent verification of source-record correctness,
+identity, or document authenticity. A structural `PASS` is not truth evidence.
+
+Each JSON field result exposes `observed_value`, `claimed_value`, `status`, `reason_codes`,
+OCR/damage/validation evidence and compatibility aliases. The document carries evidence-schema,
+code, configuration and template versions. Stable reason codes are the primary machine-readable
+explanation; the existing detailed text is retained for compatibility. See
+[`docs/evidence_contract.md`](docs/evidence_contract.md) for the contract and migration notes.
+
+The rules are in one place (`src/classifier.py`) and every decision is recorded with
+stable codes plus plain-language details, so a reviewer can audit *why* a field was downgraded.
 
 **The thresholds are heuristics, not statistics.** They come from OCR output and pattern
 matching. DisasterDoc performs no statistical validation and reports no probability that
@@ -233,9 +241,15 @@ Pinned in `requirements.txt`. OCR weights (~94 MB) download on first use into
 ## 11. Privacy and scope
 
 - Uploaded documents are **processed in memory** for the session and are not written to
-  disk by the app.
-- Processing is local; the **only** outbound request is the optional AI commentary call,
-  and it sends damaged-field text fragments — **never images**.
+  disk by the app. PNG, JPEG, WebP, BMP, and TIFF signatures are checked before decoding;
+  uploads are capped at 25 MiB, 25 million pixels, and 10,000 pixels per dimension.
+- Processing is local; the **only** outbound request is optional AI commentary, which is
+  **off by default**. If explicitly enabled, the request contains incomplete OCR text,
+  field labels/status/reasons, deterministic validation results/evidence (including
+  competing readings and their boxes/scores when present), the expected format, a
+  SHA-256 document ID, and an obscured-area fraction — **never the source image**. `.env`
+  is read locally without overriding environment variables; keep API keys out of source
+  control.
 - No government database is queried, no identity is verified, no replacement document is
   generated, no legal validity is claimed.
 - Demo mode uses synthetic documents only.
@@ -265,9 +279,17 @@ hash of a forgery is still a hash of a forgery, and this is stated in the report
   direction) or, less often, hide damage.
 - **Handwriting is not supported** by the OCR configuration used here.
 - **Heuristic thresholds, no statistical validation.** The buckets are transparent, not
-  calibrated; accuracy has not been measured against a labelled corpus.
-- **AI commentary needs a key.** Without one, the app runs the full deterministic pipeline
-  and says so explicitly.
+  calibrated; OCR confidence is not a correctness probability.
+- **Synthetic evaluation only.** Phase 2 characterized 33 controlled classifier inputs;
+  Phase 3 ran a 40-case, 10-source image-level pilot through EasyOCR and the full
+  pipeline. Phase 3 initially had 11 source-label false recoveries; Phase 5 rejected one
+  impossible calendar date, leaving 10. Every residual Phase 3 reading matches deliberately
+  altered visible image text and differs from the original source value. Phase 2 has no
+  image/OCR evidence. These findings do not estimate real-world OCR accuracy. See the
+  Phase 2/3 methodology docs and `docs/phase_6_report.md` for label scope and denominators.
+- **AI commentary is optional and off by default.** A Gemini API key is required when a
+  user explicitly enables it; without one, the deterministic pipeline remains available.
+  The configured `DD_AI_TIMEOUT` value is not yet applied to the SDK request.
 - The classifier decides from a single document; it has no cross-document or registry
   context, by design.
 
@@ -318,11 +340,21 @@ Run the test suite:
 pytest -q
 ```
 
-The suite covers the acceptance criteria: the expected status table for each demo
-document, the `value = null` invariant, raw-OCR preservation, bounding boxes inside the
-image, classification identical with AI disabled, AI guardrails rejecting
-factual writes, hash provenance, verification-queue coverage, JSON/PDF export, invalid
-input handling, and demo reproducibility (33 tests).
+The suite covers expected statuses for OCR-stable demo fields, a safety assertion for
+live DOB OCR output, the `value = null` invariant, raw-OCR preservation, bounding boxes
+inside the image, classification identical with AI disabled, AI guardrails rejecting
+factual writes, hash provenance, verification-queue coverage, JSON/PDF export, upload
+signature/size/pixel/decompression-bomb checks, HTML/PDF escaping, bounded session results,
+AI opt-in defaults, invalid input handling, deterministic classifier cases, the versioned
+observed/claimed evidence and reason-code contract, image-level evaluation integrity, and
+same-seed demo reproducibility in isolated temporary directories, competing OCR-reading
+abstention, and separately timed OCR/image stages. The Phase 5 baseline was **98 passed, 1
+strict XFAIL, 20 warnings**; Phase 6's full suite reported **106 passed, 1 strict XFAIL,
+20 warnings** in 187.43 s. The security suite reported **14 passed**. The strict expected
+failure documents a known limitation: a single high-confidence, format-valid identifier
+substitution is not detected by the single-pass classifier. Phase 5 added calendar-valid
+DOB checking; Phase 6 adds conservative overlapping-reading handling. Neither validates
+source-record truth. See `docs/phase_6_report.md` for exact environment and commands.
 
 ## 17. Configuration
 
@@ -330,7 +362,7 @@ input handling, and demo reproducibility (33 tests).
 |---|---|---|
 | `GEMINI_API_KEY` | *(unset)* | enables the optional AI commentary layer |
 | `DD_GEMINI_MODEL` | `gemini-2.5-flash` | commentary model |
-| `DD_AI_TIMEOUT` | `25` | AI request timeout (seconds) |
+| `DD_AI_TIMEOUT` | `25` | reserved config value; it is not currently enforced by the Gemini SDK request |
 | `DD_MODEL_CACHE` | `~/.cache/easyocr` | where OCR weights are cached |
 | `DD_OCR_ENGINE` | `EasyOCR` | OCR engine label recorded in the report |
 
@@ -352,16 +384,21 @@ disasterdoc/
 │   ├── damage.py               surface-damage map
 │   ├── fields.py               deterministic label/region field mapping
 │   ├── classifier.py           RECOVERED / PARTIAL / UNRECOVERABLE + reasons
+│   ├── validation.py           deterministic structural/calendar evidence
 │   ├── evidence.py             evidence document, annotated image, verification queue
 │   ├── ai_commentary.py        guardrailed Gemini commentary (optional)
 │   ├── report.py               JSON + PDF evidence reports
 │   └── pipeline.py             stage orchestration
 ├── demo/                       synthetic damaged documents (+ ground-truth masks)
+├── evaluation/                 evaluation-only cases/results and synthetic assets
+├── docs/                       audits, phase reports, and evaluation methodology
 ├── tools/
 │   ├── make_demo_docs.py       demo document generator
 │   ├── tune_demo_docs.py       damage-parameter sweep against real OCR
+│   ├── run_image_level_evaluation.py  Phase 3 synthetic image-level runner
+│   ├── analyze_phase6.py       frozen Phase 2/3/5 residual analysis (offline)
 │   └── make_figures.py         README figures + sample reports
-├── tests/                      acceptance + headless UI tests
+├── tests/                      production, security, UI, and evaluation tests
 ├── outputs/                    sample evidence reports
 └── assets/                     README figures
 ```
