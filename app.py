@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import sys
+from html import escape as html_escape
 from pathlib import Path
 
 import streamlit as st
@@ -21,8 +22,8 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from src import ai_commentary, config, evidence, report  # noqa: E402
-from src.pipeline import PipelineResult, run_pipeline  # noqa: E402
+from src import config, evidence, report
+from src.pipeline import PipelineResult, run_pipeline
 
 st.set_page_config(
     page_title="DisasterDoc - evidence-first document recovery",
@@ -102,6 +103,11 @@ STATUS_ICON = {
 # --------------------------------------------------------------------------------------
 # small render helpers
 # --------------------------------------------------------------------------------------
+def _safe_html(value: object) -> str:
+    """Escape untrusted OCR, AI, filename, and exception text before HTML rendering."""
+    return html_escape(str(value), quote=True)
+
+
 def header() -> None:
     st.markdown(
         f"""
@@ -117,19 +123,19 @@ def header() -> None:
 
 
 def status_pill(status: str) -> str:
-    return (
-        f'<span class="dd-pill {STATUS_CLASS[status]}">{STATUS_ICON[status]} {status}</span>'
-    )
+    css_class = STATUS_CLASS.get(status, "u")
+    icon = STATUS_ICON.get(status, "\u26aa")
+    return f'<span class="dd-pill {css_class}">{icon} {_safe_html(status)}</span>'
 
 
 def field_card(field, selected: bool) -> str:
-    cls = STATUS_CLASS[field.status]
+    cls = STATUS_CLASS.get(field.status, "u")
     if field.status == config.STATUS_RECOVERED:
-        value_html = f'<div class="dd-value">{field.value}</div>'
+        value_html = f'<div class="dd-value">{_safe_html(field.value)}</div>'
     elif field.status == config.STATUS_PARTIAL:
         shown = field.raw_ocr_text or "no readable text"
         value_html = (
-            f'<div class="dd-raw">{shown}</div>'
+            f'<div class="dd-raw">{_safe_html(shown)}</div>'
             f'<div class="dd-note" style="margin-top:5px;">No value reported \u2014 the document does not '
             f'fully show this field.</div>'
         )
@@ -138,21 +144,21 @@ def field_card(field, selected: bool) -> str:
     sel = " sel" if selected else ""
     return (
         f'<div class="dd-field {cls}{sel}">'
-        f'<span class="dd-flabel">{field.label}</span>{status_pill(field.status)}'
+        f'<span class="dd-flabel">{_safe_html(field.label)}</span>{status_pill(field.status)}'
         f"{value_html}</div>"
     )
 
 
 def stage_html(stage) -> str:
     mark = '<span class="tick">\u2713</span>' if stage.ok else '<span class="fail">\u2715</span>'
-    detail = f' <span class="det">{stage.detail}</span>' if stage.detail else ""
-    return f'<div class="dd-stage">{mark}{stage.label}{detail}</div>'
+    detail = f' <span class="det">{_safe_html(stage.detail)}</span>' if stage.detail else ""
+    return f'<div class="dd-stage">{mark}{_safe_html(stage.label)}{detail}</div>'
 
 
 def bbox_label(field) -> str:
     if not field.evidence:
         return "no evidence region"
-    ids = ", ".join(e["observation_id"] for e in field.evidence)
+    ids = ", ".join(_safe_html(e["observation_id"]) for e in field.evidence)
     box = field.evidence_bbox
     return f"{ids} \u00b7 bbox [{box[0]}, {box[1]}, {box[2]}, {box[3]}]" if box else ids
 
@@ -165,6 +171,11 @@ def process(doc_bytes: bytes, use_ai: bool) -> PipelineResult:
     store: dict = st.session_state.setdefault("results", {})
     if key in store:
         return store[key]
+
+    # Keep only a bounded number of full-resolution results in session memory.
+    limit = max(1, config.MAX_SESSION_RESULTS)
+    while len(store) >= limit:
+        store.pop(next(iter(store)))
 
     progress = st.empty()
     rendered: list[str] = []
@@ -180,12 +191,9 @@ def process(doc_bytes: bytes, use_ai: bool) -> PipelineResult:
 
     try:
         result = run_pipeline(doc_bytes, use_ai=use_ai, on_stage=on_stage)
-    except Exception as exc:  # absolute safety net: the app must never crash
+    except Exception:  # absolute safety net: the app must never crash
         progress.empty()
-        st.error(
-            "Something went wrong while processing this file, so no field values are reported. "
-            f"({type(exc).__name__})"
-        )
+        st.error("Something went wrong while processing this file, so no field values are reported.")
         st.stop()
 
     payloads: dict[str, bytes | None] = {"json": None, "pdf": None, "pdf_error": None}
@@ -194,8 +202,8 @@ def process(doc_bytes: bytes, use_ai: bool) -> PipelineResult:
         if report.PDF_AVAILABLE:
             try:
                 payloads["pdf"] = report.to_pdf_bytes(result.document, result.original_bgr, result.annotation)
-            except Exception as exc:  # PDF is a convenience export; JSON must always work
-                payloads["pdf_error"] = f"{type(exc).__name__}: {exc}"
+            except Exception:  # PDF is a convenience export; JSON must always work
+                payloads["pdf_error"] = "PDF generation failed; the JSON evidence report remains available."
 
     store[key] = (result, payloads)
     progress.empty()
@@ -222,9 +230,11 @@ def sidebar() -> tuple[bool, bool, bool]:
 
         st.markdown('<div class="dd-sep"></div>', unsafe_allow_html=True)
         st.markdown('<div class="dd-kicker">Analysis options</div>', unsafe_allow_html=True)
-        use_ai = st.toggle("AI commentary (advisory)", value=ai_commentary.ai_available(),
-                           help="Gemini explains and suggests verification steps. It can never change a "
-                                "status, a value, or a bounding box. The app is fully functional without it.")
+        use_ai = st.toggle("AI commentary (advisory)", value=False,
+                           help="Off by default. If enabled, incomplete OCR text and deterministic validation/reason evidence "
+                                "(including competing readings and their boxes/scores when present), field/status/pattern, "
+                                "document hash, and obscured-area fraction are sent to Gemini; no image is sent and no "
+                                "deterministic decision can be changed.")
         show_ocr = st.toggle("Show raw OCR boxes", value=True,
                              help="Overlay every observation returned by the OCR engine, exactly as returned.")
         show_pre = st.toggle("Show preprocessed image", value=False,
@@ -233,8 +243,8 @@ def sidebar() -> tuple[bool, bool, bool]:
         st.markdown('<div class="dd-sep"></div>', unsafe_allow_html=True)
         st.markdown('<div class="dd-kicker">Status legend</div>', unsafe_allow_html=True)
         st.markdown(
-            f'<div class="dd-note">{STATUS_ICON[config.STATUS_RECOVERED]} <b>RECOVERED</b> \u2014 the document itself '
-            "sufficiently supports this field; the value is reported verbatim from OCR evidence.<br><br>"
+            f'<div class="dd-note">{STATUS_ICON[config.STATUS_RECOVERED]} <b>RECOVERED</b> \u2014 a complete OCR transcription '
+            "passed the current structural/readability checks. It is not independently verified against a source record or identity database.<br><br>"
             f'{STATUS_ICON[config.STATUS_PARTIAL]} <b>PARTIAL</b> \u2014 some evidence exists but the complete value '
             "cannot be established. <b>No value is reported.</b><br><br>"
             f'{STATUS_ICON[config.STATUS_UNRECOVERABLE]} <b>UNRECOVERABLE</b> \u2014 not enough usable evidence. '
@@ -246,9 +256,11 @@ def sidebar() -> tuple[bool, bool, bool]:
         st.markdown('<div class="dd-kicker">Privacy &amp; scope</div>', unsafe_allow_html=True)
         st.markdown(
             '<div class="dd-note">Documents are processed in memory for this session and are never stored or '
-            "uploaded to a document service. The only outbound call is the optional AI commentary request, which "
-            "sends damaged-field fragments \u2014 never images. No government database is queried, no identity is "
-            "verified, and no replacement document is generated.</div>",
+            "uploaded to a document service. Optional AI commentary is off by default. If enabled, the only outbound "
+            "request contains incomplete OCR text, field labels/status/reasons, deterministic validation results/evidence "
+            "(including competing readings and their boxes/scores when present), the expected format, a SHA-256 "
+            "document ID, and an obscured-area fraction \u2014 never the source image. No government database is "
+            "queried, no identity is verified, and no replacement document is generated.</div>",
             unsafe_allow_html=True,
         )
         st.markdown('<div class="dd-sep"></div>', unsafe_allow_html=True)
@@ -275,13 +287,14 @@ def upload_page() -> None:
             label_visibility="collapsed",
         )
         st.markdown(
-            '<div class="dd-note">Accepted: JPG / PNG scans or photographs. '
+            '<div class="dd-note">Accepted: JPG/JPEG, PNG, WebP, BMP, or TIFF; maximum 25 MB, '
+            "25 million pixels, and 10,000 px per dimension. File signature/container is validated before OCR. "
             "Demo mode uses synthetic documents.</div>",
             unsafe_allow_html=True,
         )
         if uploaded is not None:
             data = uploaded.getvalue()
-            fingerprint = (uploaded.name, len(data))
+            fingerprint = (hashlib.sha256(data).hexdigest(), len(data))
             if st.session_state.get("_upload_fp") != fingerprint:
                 st.session_state._upload_fp = fingerprint
                 st.session_state.doc = {"name": uploaded.name, "bytes": data, "demo": False}
@@ -290,7 +303,7 @@ def upload_page() -> None:
 
     with right:
         st.markdown(
-            f"""
+            """
             <div class="dd-block">
               <div class="dd-kicker">How this works</div>
               <div class="dd-note" style="margin-top:6px;">
@@ -301,7 +314,7 @@ def upload_page() -> None:
               </div>
               <div class="dd-note" style="margin-top:8px;">
                 <b>Deterministic code decides facts. AI decides wording.</b> A field is only called
-                RECOVERED when the visible evidence supports the full value.
+                RECOVERED only for a complete OCR transcription that passes current checks; this is not source-record verification.
               </div>
               <div class="dd-warn" style="margin-top:10px;">
                 AI is never allowed to complete a field, change a status, or edit OCR text or confidence.
@@ -328,7 +341,7 @@ def upload_page() -> None:
             if path.exists():
                 st.image(str(path), width="stretch")
                 st.caption(f"**{label}** \u2014 {expect}")
-                if st.button(f"Analyse \u2192", key=f"upload_page_{name}", width="stretch"):
+                if st.button("Analyse \u2192", key=f"upload_page_{name}", width="stretch"):
                     st.session_state.doc = {"name": name, "bytes": path.read_bytes(), "demo": True}
                     st.session_state.selected = None
                     st.rerun()
@@ -395,6 +408,9 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
 
     with right:
         st.markdown('<div class="dd-kicker">Field results</div>', unsafe_allow_html=True)
+        st.caption(
+            "RECOVERED means an OCR transcription passed current checks; it is not independent verification of identity or source-record correctness."
+        )
         for field in doc.fields:
             is_sel = st.session_state.get("selected") == field.field_name
             st.markdown(field_card(field, is_sel), unsafe_allow_html=True)
@@ -410,27 +426,48 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
     if selected:
         field = doc.field(selected)
         st.markdown('<div class="dd-sep"></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="dd-sec">Evidence detail \u00b7 {field.label}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="dd-sec">Evidence detail \u00b7 {_safe_html(field.label)}</div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns([1, 1.35, 1], gap="large")
 
         with c1:
-            observed = field.raw_ocr_text or "\u2014"
+            observed = _safe_html(field.raw_ocr_text or "\u2014")
+            claimed = _safe_html(field.value if field.value is not None else "null (not reported)")
+            claim_label = (
+                "OCR transcription (unverified)"
+                if field.status == config.STATUS_RECOVERED
+                else "Claimed value"
+            )
             st.markdown(
                 f"""
                 <div class="dd-block">
-                  <div class="dd-kicker">Field</div><div style="font-size:15px;font-weight:600;">{field.label}</div>
+                  <div class="dd-kicker">Field</div><div style="font-size:15px;font-weight:600;">{_safe_html(field.label)}</div>
                   <div class="dd-kicker" style="margin-top:10px;">Status</div>
                   <div>{status_pill(field.status)}</div>
                   <div class="dd-kicker" style="margin-top:10px;">Observed evidence</div>
                   <div class="dd-raw">{observed}</div>
-                  <div class="dd-kicker" style="margin-top:10px;">Reported value</div>
-                  <div class="dd-mono">{field.value if field.value is not None else "null (not reported)"}</div>
+                  <div class="dd-kicker" style="margin-top:10px;">{_safe_html(claim_label)}</div>
+                  <div class="dd-mono">{claimed}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-        why = "".join(f"• {r}<br>" for r in field.reasons)
+        why = "".join(f"• {_safe_html(reason)}<br>" for reason in field.reasons)
         why_display = why or "—"
+        conflict_readings: list[str] = []
+        for row in field.validation_evidence:
+            if row.validator != "ocr_observation_consistency":
+                continue
+            for conflict in row.details.get("conflicts", []):
+                for text, confidence in zip(conflict.get("observed_texts", []), conflict.get("ocr_confidences", [])):
+                    conflict_readings.append(
+                        f"{_safe_html(text)} (OCR score {float(confidence):.2f})"
+                    )
+        conflict_html = "<br>".join(conflict_readings)
+        conflict_block = (
+            f'<div class="dd-warn" style="margin-top:10px;"><b>Unresolved OCR alternatives</b><br>{conflict_html}</div>'
+            if conflict_readings
+            else ""
+        )
 
         with c2:
             conf = field.ocr_confidence
@@ -440,10 +477,11 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
                 <div class="dd-block">
                   <div class="dd-kicker">Evidence region</div>
                   <div class="dd-mono">{bbox_label(field)}</div>
+                  {conflict_block}
                   <div class="dd-kicker" style="margin-top:10px;">OCR confidence (engine output)</div>
                   <div class="dd-mono">{conf_display}</div>
                   <div class="dd-kicker" style="margin-top:10px;">Evidence confidence bucket</div>
-                  <div class="dd-mono">{field.confidence_bucket.upper()}</div>
+                  <div class="dd-mono">{_safe_html(field.confidence_bucket.upper())}</div>
                   <div class="dd-note" style="margin-top:6px;">{why_display}</div>
                   <div class="dd-note" style="margin-top:6px;">
                     The first is the engine's own score for a box of pixels, the second is a
@@ -459,7 +497,7 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
             st.markdown(
                 f"""
                 <div class="dd-block">
-                  <div class="dd-kicker">Why {field.status}?</div>
+                  <div class="dd-kicker">Why {_safe_html(field.status)}?</div>
                   <div class="dd-note" style="margin-top:6px;">{why_display}</div>
                   <div class="dd-kicker" style="margin-top:10px;">Requires human verification</div>
                   <div class="dd-mono">{"yes" if field.needs_verification else "no"}</div>
@@ -476,7 +514,10 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
             st.markdown('<div class="dd-kicker" style="margin-top:14px;">AI assistance</div>', unsafe_allow_html=True)
             a1, a2 = st.columns([1, 1], gap="large")
             with a1:
-                interps = "".join(f"<li>{i}</li>" for i in ai.get("possible_interpretations", []))
+                interpretations = ai.get("possible_interpretations", [])
+                if not isinstance(interpretations, list):
+                    interpretations = []
+                interps = "".join(f"<li>{_safe_html(item)}</li>" for item in interpretations)
                 st.markdown(
                     f"""
                     <div class="dd-warn">
@@ -494,10 +535,10 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
                     f"""
                     <div class="dd-block">
                       <div class="dd-kicker">Suggested verification</div>
-                      <div class="dd-note" style="margin-top:6px;">{ai.get('verification_instruction', '')}</div>
+                      <div class="dd-note" style="margin-top:6px;">{_safe_html(ai.get('verification_instruction', ''))}</div>
                       <div class="dd-kicker" style="margin-top:10px;">AI commentary</div>
-                      <div class="dd-note">{ai.get('commentary', '')}</div>
-                      <div class="dd-guard">{ai.get('guardrail', '')}</div>
+                      <div class="dd-note">{_safe_html(ai.get('commentary', ''))}</div>
+                      <div class="dd-guard">{_safe_html(ai.get('guardrail', ''))}</div>
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -521,7 +562,9 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
     for task in doc.verification_tasks:
         state_key = f"task_{doc.document_id[:12]}_{task['task_id']}"
         priority = {"high": "\U0001F534", "medium": "\U0001F7E1"}.get(task["priority"], "\u2022")
-        if st.checkbox(f"{priority} {task['text']}", key=state_key):
+        # OCR-derived verification text is displayed as plain text, not interpreted as Markdown.
+        st.text(f"{priority} {task['text']}")
+        if st.checkbox("Acknowledged", key=state_key):
             done += 1
     st.caption(f"{done} of {len(doc.verification_tasks)} verification items acknowledged.")
 
@@ -551,13 +594,13 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
         st.markdown(
             f"""
             <div class="dd-block dd-mono" style="font-size:12px;">
-              document_id &nbsp;: {doc.document_id}<br>
-              processed_at : {doc.processed_at}<br>
-              template &nbsp;&nbsp;&nbsp;&nbsp;: {doc.template}<br>
-              ocr_engine &nbsp;&nbsp;: {doc.audit.get('ocr_engine')}<br>
-              ai_used &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {str(doc.audit.get('ai_used')).lower()}
-              ({doc.audit.get('ai_role')})<br>
-              code_version : {doc.audit.get('code_version')}
+              document_id &nbsp;: {_safe_html(doc.document_id)}<br>
+              processed_at : {_safe_html(doc.processed_at)}<br>
+              template &nbsp;&nbsp;&nbsp;&nbsp;: {_safe_html(doc.template)}<br>
+              ocr_engine &nbsp;&nbsp;: {_safe_html(doc.audit.get('ocr_engine'))}<br>
+              ai_used &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {_safe_html(str(doc.audit.get('ai_used')).lower())}
+              ({_safe_html(doc.audit.get('ai_role'))})<br>
+              code_version : {_safe_html(doc.audit.get('code_version'))}
             </div>
             <div class="dd-note" style="margin-top:6px;">The document ID is the SHA-256 of the exact file that was
             processed. It identifies the processed file; it does not prove the document is authentic.</div>
@@ -570,7 +613,7 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
     if doc.audit.get("ai_guardrail_notes"):
         with st.expander("AI guardrail log (attempted writes that were ignored)"):
             for note in doc.audit["ai_guardrail_notes"]:
-                st.markdown(f"- {note}")
+                st.text(note)
 
     with st.expander("Raw OCR observations (unmodified evidence)"):
         st.caption(
@@ -592,7 +635,7 @@ def results_page(result: PipelineResult, payloads: dict, show_ocr: bool, show_pr
         )
 
     st.markdown(
-        f'<div class="dd-foot">{config.DISCLAIMER}</div>',
+        f'<div class="dd-foot">{_safe_html(config.DISCLAIMER)}</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -632,8 +675,8 @@ def main() -> None:
     name = doc["name"]
     kind = "synthetic demo document" if doc.get("demo") else "uploaded document"
     st.markdown(
-        f'<div class="dd-note" style="margin-bottom:8px;">Analysing <b>{name}</b> ({kind}, '
-        f"{len(doc['bytes']) / 1024:.0f} KB) \u00b7 template <b>{config.TEMPLATE_NAME}</b></div>",
+        f'<div class="dd-note" style="margin-bottom:8px;">Analysing <b>{_safe_html(name)}</b> ({kind}, '
+        f"{len(doc['bytes']) / 1024:.0f} KB) \u00b7 template <b>{_safe_html(config.TEMPLATE_NAME)}</b></div>",
         unsafe_allow_html=True,
     )
 

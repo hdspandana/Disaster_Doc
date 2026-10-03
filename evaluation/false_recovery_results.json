@@ -1,0 +1,2480 @@
+{
+  "schema_version": 1,
+  "title": "DisasterDoc controlled false-recovery characterization cases",
+  "method": "controlled_classifier_inputs",
+  "scope": "Evaluation-only direct calls to classify_field through a synthetic harness; no OCR engine or full image pipeline was run.",
+  "ground_truth_policy": "ground_truth is evaluation-only metadata read by the runner after classification; it is never passed to src, MappedField, Observation, pipeline state, or production evidence.",
+  "confidence_note": "ocr_confidence is injected as a controlled classifier input. It is not an OCR-engine measurement or a calibrated probability of correctness.",
+  "damage_note": "Damage profiles are deterministic DamageMap masks injected directly into the classifier harness. They are not rendered images and do not test build_damage_map or OCR robustness.",
+  "versions": {
+    "code_version": "disasterdoc-0.1.0",
+    "classifier_version": "disasterdoc-0.1.0",
+    "pipeline_version": "disasterdoc-0.1.0",
+    "template": "synthetic_id_v1",
+    "repository_revision": "ea0d7e95cb36",
+    "repository_worktree_dirty": true,
+    "source_sha256": {
+      "src/classifier.py": "ccbd63eb8fff8fc385531d2280a57805d4afc1543c0f5ac1c0b9fa69696fcfda",
+      "src/config.py": "d002dc221d998248e4691557feeba097f40242698d0800670ec626188d4a1f23"
+    }
+  },
+  "summary": {
+    "case_count": 33,
+    "outcomes": {
+      "CORRECT_ABSTENTION": 12,
+      "CORRECT_RECOVERY": 5,
+      "FALSE_RECOVERY": 16
+    },
+    "statuses": {
+      "PARTIAL": 12,
+      "RECOVERED": 21
+    },
+    "validator_results": {
+      "PASSED": 24,
+      "REJECTED": 9
+    },
+    "reason_code_occurrences": {
+      "abstention_summary": 12,
+      "adjacent_damage": 1,
+      "field_pattern": 9,
+      "field_region_damage": 1,
+      "low_confidence": 1,
+      "minimum_alnum_chars": 3,
+      "quality_gates_passed": 21,
+      "truncation_marker": 1
+    },
+    "false_recovery_case_ids": [
+      "id_single_digit_substitution_conf_060_clean",
+      "id_single_digit_substitution_conf_080_clean",
+      "id_single_digit_substitution_conf_094_clean",
+      "id_single_digit_substitution_conf_099_clean",
+      "id_single_digit_substitution_damage_moderate",
+      "id_multiple_digit_substitution",
+      "id_transposition",
+      "id_valid_format_wrong_value",
+      "dob_valid_format_wrong_value",
+      "dob_impossible_calendar_date",
+      "name_ocr_confusion_O_to_Q",
+      "name_plausible_wrong_value",
+      "district_plausible_wrong_value",
+      "address_ocr_confusion_S_to_5",
+      "address_ocr_confusion_I_to_1",
+      "address_plausible_wrong_value"
+    ],
+    "outcomes_by_damage_profile": {
+      "adjacent_after_value": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "clean": {
+        "CORRECT_ABSTENTION": 10,
+        "CORRECT_RECOVERY": 5,
+        "FALSE_RECOVERY": 15
+      },
+      "zone_heavy_50pct": {
+        "CORRECT_ABSTENTION": 1
+      },
+      "zone_moderate_20pct": {
+        "FALSE_RECOVERY": 1
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "baseline_name_correct",
+      "field_name": "name",
+      "error_type": "none",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAO",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_RECOVERY",
+      "is_false_recovery": false,
+      "status": "RECOVERED",
+      "claimed_value": "ANANYA RAO",
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+        "pattern_valid": true,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 2,
+        "minimum_tokens": 2,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          133,
+          630,
+          179
+        ],
+        "evidence_bbox": [
+          60,
+          146,
+          220,
+          166
+        ],
+        "damage_probe_bbox": [
+          220,
+          143,
+          255,
+          169
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            146,
+            220,
+            166
+          ],
+          "ocr_confidence": 0.94,
+          "text": "ANANYA RAO",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "baseline_id_correct",
+      "field_name": "id_number",
+      "error_type": "none",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48291",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_RECOVERY",
+      "is_false_recovery": false,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48291",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48291",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "baseline_dob_correct",
+      "field_name": "dob",
+      "error_type": "none",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 1991",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_RECOVERY",
+      "is_false_recovery": false,
+      "status": "RECOVERED",
+      "claimed_value": "14 08 1991",
+      "validation": {
+        "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+        "pattern_valid": true,
+        "alnum_characters": 8,
+        "minimum_alnum_characters": 8,
+        "tokens": 3,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          263,
+          630,
+          309
+        ],
+        "evidence_bbox": [
+          60,
+          276,
+          220,
+          296
+        ],
+        "damage_probe_bbox": [
+          220,
+          273,
+          255,
+          299
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            276,
+            220,
+            296
+          ],
+          "ocr_confidence": 0.94,
+          "text": "14 08 1991",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "baseline_district_correct",
+      "field_name": "district",
+      "error_type": "none",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "BENGALURU",
+      "observed_text": "BENGALURU",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_RECOVERY",
+      "is_false_recovery": false,
+      "status": "RECOVERED",
+      "claimed_value": "BENGALURU",
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+        "pattern_valid": true,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          328,
+          630,
+          374
+        ],
+        "evidence_bbox": [
+          60,
+          341,
+          220,
+          361
+        ],
+        "damage_probe_bbox": [
+          220,
+          338,
+          255,
+          364
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            341,
+            220,
+            361
+          ],
+          "ocr_confidence": 0.94,
+          "text": "BENGALURU",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "baseline_address_correct",
+      "field_name": "address",
+      "error_type": "none",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW STREET, WARD 7",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_RECOVERY",
+      "is_false_recovery": false,
+      "status": "RECOVERED",
+      "claimed_value": "42 LAKEVIEW STREET, WARD 7",
+      "validation": {
+        "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+        "pattern_valid": true,
+        "alnum_characters": 21,
+        "minimum_alnum_characters": 12,
+        "tokens": 5,
+        "minimum_tokens": 3,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          401,
+          630,
+          451
+        ],
+        "evidence_bbox": [
+          60,
+          416,
+          220,
+          436
+        ],
+        "damage_probe_bbox": [
+          220,
+          413,
+          255,
+          439
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            416,
+            220,
+            436
+          ],
+          "ocr_confidence": 0.94,
+          "text": "42 LAKEVIEW STREET, WARD 7",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_040_clean",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.4,
+      "confidence_bucket": "low",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "OCR confidence for the surviving text is low (0.40); the glyphs themselves are not reliable evidence.",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "low_confidence",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.4,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_060_clean",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.6,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48281",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.6,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_080_clean",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.8,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48281",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.8,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_094_clean",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence_and_damage",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48281",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_099_clean",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.99,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48281",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.99,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_moderate",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "zone_moderate_20pct",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48281",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.2,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_heavy",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "zone_heavy_50pct",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.5,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "50% of this field's value region is obscured (limit 35%).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_region_damage",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_adjacent",
+      "field_name": "id_number",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "adjacent_after_value",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.034108,
+        "adjacent_obscuration": 1.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Damage begins immediately after the observed text (obscured 100% of the next 35 px, unbroken run 35 px), so the printed value may continue into an unreadable area.",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "adjacent_damage",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48281",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_multiple_digit_substitution",
+      "field_name": "id_number",
+      "error_type": "multiple_digit_substitution",
+      "confusion_pair": "2->0, 9->7",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48071",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-48071",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-48071",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_ocr_confusion_8_to_B",
+      "field_name": "id_number",
+      "error_type": "character_substitution",
+      "confusion_pair": "8->B",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4B291",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-4B291",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_ocr_confusion_1_to_I",
+      "field_name": "id_number",
+      "error_type": "character_substitution",
+      "confusion_pair": "1->I",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4829I",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-4829I",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_deletion",
+      "field_name": "id_number",
+      "error_type": "deletion",
+      "confusion_pair": "9 deleted",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4821",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 6,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "minimum_alnum_chars",
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text is shorter than the template expects for this field (6 of at least 7 characters).",
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "minimum_alnum_chars",
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-4821",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_insertion",
+      "field_name": "id_number",
+      "error_type": "insertion",
+      "confusion_pair": "extra 9",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482991",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 8,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-482991",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_transposition",
+      "field_name": "id_number",
+      "error_type": "transposition",
+      "confusion_pair": "adjacent 8 and 2 swapped",
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-42891",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "DX-42891",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-42891",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_truncation_unmarked",
+      "field_name": "id_number",
+      "error_type": "truncation",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 5,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "minimum_alnum_chars",
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text is shorter than the template expects for this field (5 of at least 7 characters).",
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "minimum_alnum_chars",
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-482",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_truncation_marker",
+      "field_name": "id_number",
+      "error_type": "truncation_with_marker",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482...",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": false,
+        "alnum_characters": 5,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "minimum_alnum_chars",
+          "field_pattern",
+          "truncation_marker"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text is shorter than the template expects for this field (5 of at least 7 characters).",
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z]{2}-[0-9]{5}$).",
+        "Observed text ends with the truncation marker '.', so the printed value probably continued beyond what is legible.",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "minimum_alnum_chars",
+        "field_pattern",
+        "truncation_marker",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "DX-482...",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "id_valid_format_wrong_value",
+      "field_name": "id_number",
+      "error_type": "valid_format_incorrect_value",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "DX-48291",
+      "observed_text": "QY-73156",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "QY-73156",
+      "validation": {
+        "pattern": "^[A-Z]{2}-[0-9]{5}$",
+        "pattern_valid": true,
+        "alnum_characters": 7,
+        "minimum_alnum_characters": 7,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          198,
+          630,
+          244
+        ],
+        "evidence_bbox": [
+          60,
+          211,
+          220,
+          231
+        ],
+        "damage_probe_bbox": [
+          220,
+          208,
+          255,
+          234
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            211,
+            220,
+            231
+          ],
+          "ocr_confidence": 0.94,
+          "text": "QY-73156",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "dob_ocr_confusion_1_to_I",
+      "field_name": "dob",
+      "error_type": "character_substitution",
+      "confusion_pair": "1->I",
+      "sweep": null,
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 199I",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+        "pattern_valid": false,
+        "alnum_characters": 8,
+        "minimum_alnum_characters": 8,
+        "tokens": 3,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          263,
+          630,
+          309
+        ],
+        "evidence_bbox": [
+          60,
+          276,
+          220,
+          296
+        ],
+        "damage_probe_bbox": [
+          220,
+          273,
+          255,
+          299
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            276,
+            220,
+            296
+          ],
+          "ocr_confidence": 0.94,
+          "text": "14 08 199I",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "dob_valid_format_wrong_value",
+      "field_name": "dob",
+      "error_type": "valid_format_incorrect_value",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 1981",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "14 08 1981",
+      "validation": {
+        "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+        "pattern_valid": true,
+        "alnum_characters": 8,
+        "minimum_alnum_characters": 8,
+        "tokens": 3,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          263,
+          630,
+          309
+        ],
+        "evidence_bbox": [
+          60,
+          276,
+          220,
+          296
+        ],
+        "damage_probe_bbox": [
+          220,
+          273,
+          255,
+          299
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            276,
+            220,
+            296
+          ],
+          "ocr_confidence": 0.94,
+          "text": "14 08 1981",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "dob_impossible_calendar_date",
+      "field_name": "dob",
+      "error_type": "valid_shape_invalid_calendar_date",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "14 08 1991",
+      "observed_text": "31 02 1991",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "31 02 1991",
+      "validation": {
+        "pattern": "^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+        "pattern_valid": true,
+        "alnum_characters": 8,
+        "minimum_alnum_characters": 8,
+        "tokens": 3,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          263,
+          630,
+          309
+        ],
+        "evidence_bbox": [
+          60,
+          276,
+          220,
+          296
+        ],
+        "damage_probe_bbox": [
+          220,
+          273,
+          255,
+          299
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            276,
+            220,
+            296
+          ],
+          "ocr_confidence": 0.94,
+          "text": "31 02 1991",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "name_ocr_confusion_O_to_0",
+      "field_name": "name",
+      "error_type": "character_substitution",
+      "confusion_pair": "O->0",
+      "sweep": null,
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RA0",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+        "pattern_valid": false,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 2,
+        "minimum_tokens": 2,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          133,
+          630,
+          179
+        ],
+        "evidence_bbox": [
+          60,
+          146,
+          220,
+          166
+        ],
+        "damage_probe_bbox": [
+          220,
+          143,
+          255,
+          169
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z][A-Z\\.\\'\\- ]{3,40}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            146,
+            220,
+            166
+          ],
+          "ocr_confidence": 0.94,
+          "text": "ANANYA RA0",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "name_ocr_confusion_O_to_Q",
+      "field_name": "name",
+      "error_type": "character_substitution",
+      "confusion_pair": "O->Q",
+      "sweep": null,
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAQ",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "ANANYA RAQ",
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+        "pattern_valid": true,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 2,
+        "minimum_tokens": 2,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          133,
+          630,
+          179
+        ],
+        "evidence_bbox": [
+          60,
+          146,
+          220,
+          166
+        ],
+        "damage_probe_bbox": [
+          220,
+          143,
+          255,
+          169
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            146,
+            220,
+            166
+          ],
+          "ocr_confidence": 0.94,
+          "text": "ANANYA RAQ",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "name_plausible_wrong_value",
+      "field_name": "name",
+      "error_type": "valid_format_incorrect_value",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAJ",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "ANANYA RAJ",
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,40}$",
+        "pattern_valid": true,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 2,
+        "minimum_tokens": 2,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          133,
+          630,
+          179
+        ],
+        "evidence_bbox": [
+          60,
+          146,
+          220,
+          166
+        ],
+        "damage_probe_bbox": [
+          220,
+          143,
+          255,
+          169
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            146,
+            220,
+            166
+          ],
+          "ocr_confidence": 0.94,
+          "text": "ANANYA RAJ",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "district_ocr_confusion_B_to_8",
+      "field_name": "district",
+      "error_type": "character_substitution",
+      "confusion_pair": "B->8",
+      "sweep": null,
+      "ground_truth": "BENGALURU",
+      "observed_text": "8ENGALURU",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "medium",
+      "damage_profile": "clean",
+      "outcome": "CORRECT_ABSTENTION",
+      "is_false_recovery": false,
+      "status": "PARTIAL",
+      "claimed_value": null,
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+        "pattern_valid": false,
+        "alnum_characters": 9,
+        "minimum_alnum_characters": 5,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [
+          "field_pattern"
+        ],
+        "validator_result": "REJECTED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          328,
+          630,
+          374
+        ],
+        "evidence_bbox": [
+          60,
+          341,
+          220,
+          361
+        ],
+        "damage_probe_bbox": [
+          220,
+          338,
+          255,
+          364
+        ]
+      },
+      "needs_verification": true,
+      "reasons": [
+        "Observed text does not satisfy the expected pattern for this field (^[A-Z][A-Z\\.\\'\\- ]{3,30}$).",
+        "The complete value cannot be established from this document, so no value is reported."
+      ],
+      "reason_codes": [
+        "field_pattern",
+        "abstention_summary"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            341,
+            220,
+            361
+          ],
+          "ocr_confidence": 0.94,
+          "text": "8ENGALURU",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "district_plausible_wrong_value",
+      "field_name": "district",
+      "error_type": "valid_format_incorrect_value",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "BENGALURU",
+      "observed_text": "MYSURU",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "MYSURU",
+      "validation": {
+        "pattern": "^[A-Z][A-Z\\.\\'\\- ]{3,30}$",
+        "pattern_valid": true,
+        "alnum_characters": 6,
+        "minimum_alnum_characters": 5,
+        "tokens": 1,
+        "minimum_tokens": 1,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          328,
+          630,
+          374
+        ],
+        "evidence_bbox": [
+          60,
+          341,
+          220,
+          361
+        ],
+        "damage_probe_bbox": [
+          220,
+          338,
+          255,
+          364
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            341,
+            220,
+            361
+          ],
+          "ocr_confidence": 0.94,
+          "text": "MYSURU",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "address_ocr_confusion_S_to_5",
+      "field_name": "address",
+      "error_type": "character_substitution",
+      "confusion_pair": "S->5",
+      "sweep": null,
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW 5TREET, WARD 7",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "42 LAKEVIEW 5TREET, WARD 7",
+      "validation": {
+        "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+        "pattern_valid": true,
+        "alnum_characters": 21,
+        "minimum_alnum_characters": 12,
+        "tokens": 5,
+        "minimum_tokens": 3,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          401,
+          630,
+          451
+        ],
+        "evidence_bbox": [
+          60,
+          416,
+          220,
+          436
+        ],
+        "damage_probe_bbox": [
+          220,
+          413,
+          255,
+          439
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            416,
+            220,
+            436
+          ],
+          "ocr_confidence": 0.94,
+          "text": "42 LAKEVIEW 5TREET, WARD 7",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "address_ocr_confusion_I_to_1",
+      "field_name": "address",
+      "error_type": "character_substitution",
+      "confusion_pair": "I->1",
+      "sweep": null,
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEV1EW STREET, WARD 7",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "42 LAKEV1EW STREET, WARD 7",
+      "validation": {
+        "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+        "pattern_valid": true,
+        "alnum_characters": 21,
+        "minimum_alnum_characters": 12,
+        "tokens": 5,
+        "minimum_tokens": 3,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          401,
+          630,
+          451
+        ],
+        "evidence_bbox": [
+          60,
+          416,
+          220,
+          436
+        ],
+        "damage_probe_bbox": [
+          220,
+          413,
+          255,
+          439
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            416,
+            220,
+            436
+          ],
+          "ocr_confidence": 0.94,
+          "text": "42 LAKEV1EW STREET, WARD 7",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    },
+    {
+      "case_id": "address_plausible_wrong_value",
+      "field_name": "address",
+      "error_type": "valid_format_incorrect_value",
+      "confusion_pair": null,
+      "sweep": null,
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW STREET, WARD 1",
+      "ocr_confidence_input": 0.94,
+      "confidence_bucket": "high",
+      "damage_profile": "clean",
+      "outcome": "FALSE_RECOVERY",
+      "is_false_recovery": true,
+      "status": "RECOVERED",
+      "claimed_value": "42 LAKEVIEW STREET, WARD 1",
+      "validation": {
+        "pattern": "^[0-9A-Z][0-9A-Z,\\.\\'\\-/ ]{8,80}$",
+        "pattern_valid": true,
+        "alnum_characters": 21,
+        "minimum_alnum_characters": 12,
+        "tokens": 5,
+        "minimum_tokens": 3,
+        "validator_findings": [],
+        "validator_result": "PASSED",
+        "note": "Pattern/length/token/truncation checks are format gates, not evidence of truth."
+      },
+      "damage_evidence": {
+        "obscuration_in_zone": 0.0,
+        "adjacent_obscuration": 0.0,
+        "field_region_bbox": [
+          50,
+          401,
+          630,
+          451
+        ],
+        "evidence_bbox": [
+          60,
+          416,
+          220,
+          436
+        ],
+        "damage_probe_bbox": [
+          220,
+          413,
+          255,
+          439
+        ]
+      },
+      "needs_verification": false,
+      "reasons": [
+        "Usable OCR evidence satisfies this field's expected pattern, is not truncated, and the surrounding region is readable."
+      ],
+      "reason_codes": [
+        "quality_gates_passed"
+      ],
+      "evidence": [
+        {
+          "observation_id": "obs_test",
+          "bbox": [
+            60,
+            416,
+            220,
+            436
+          ],
+          "ocr_confidence": 0.94,
+          "text": "42 LAKEVIEW STREET, WARD 1",
+          "usable": true
+        }
+      ],
+      "null_value_invariant_holds": true
+    }
+  ]
+}

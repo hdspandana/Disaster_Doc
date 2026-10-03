@@ -19,13 +19,13 @@ UI renders those statuses directly instead of inventing progress theatre.
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 import numpy as np
 
-from typing import Callable
-
-from . import ai_commentary, classifier, config, damage, evidence, fields as field_mapping, hashing, ocr
+from . import ai_commentary, classifier, config, damage, evidence, hashing, ocr
+from . import fields as field_mapping
 from .preprocessing import InvalidImageError
 
 
@@ -81,7 +81,7 @@ def _stage(
 
 def run_pipeline(
     image_bytes: bytes,
-    use_ai: bool = True,
+    use_ai: bool = False,
     on_stage: Callable[[StageStatus], None] | None = None,
 ) -> PipelineResult:
     """Run the full evidence pipeline on uploaded document bytes.
@@ -98,12 +98,33 @@ def run_pipeline(
     doc_id = hashing.document_id(image_bytes)
     _stage(stages, "hash", "Document hashed (SHA-256)", started, True, doc_id, on_stage)
 
-    # ---- OCR (includes decoding + preprocessing) --------------------------------------
-    started = time.time()
+    # ---- Decode/preprocess and OCR (timed as separate stages) --------------------------
+    image_started = time.time()
+    image_stage_recorded = False
+
+    def _record_preprocessed(shape: tuple[int, int], steps: list[str]) -> None:
+        nonlocal image_stage_recorded
+        if image_stage_recorded:
+            return
+        height, width = shape
+        _stage(
+            stages,
+            "image",
+            "Image decoded and preprocessed",
+            image_started,
+            True,
+            f"{width}x{height} px; " + ", ".join(steps),
+            on_stage,
+        )
+        image_stage_recorded = True
+
     try:
-        ocr_result, original_bgr, preprocessed_bgr = ocr.extract_evidence(image_bytes)
+        ocr_result, original_bgr, preprocessed_bgr = ocr.extract_evidence(
+            image_bytes, on_preprocessed=_record_preprocessed
+        )
     except InvalidImageError as exc:
-        _stage(stages, "image", "Image processed", started, False, str(exc), on_stage)
+        if not image_stage_recorded:
+            _stage(stages, "image", "Image processed", image_started, False, str(exc), on_stage)
         return PipelineResult(
             document_id=doc_id,
             document=evidence.new_document(
@@ -115,8 +136,26 @@ def run_pipeline(
             stages=stages,
             error=str(exc),
         )
-    except Exception as exc:  # unexpected decode/OCR failure - still must not crash
-        _stage(stages, "image", "Image processed", started, False, f"{type(exc).__name__}: {exc}", on_stage)
+    except Exception:  # unexpected decode/OCR failure - still must not crash
+        if not image_stage_recorded:
+            _stage(
+                stages,
+                "image",
+                "Image processed",
+                image_started,
+                False,
+                "The image could not be safely processed.",
+                on_stage,
+            )
+        _stage(
+            stages,
+            "ocr",
+            "OCR completed",
+            time.time(),
+            False,
+            "The OCR stage could not be completed safely.",
+            on_stage,
+        )
         return PipelineResult(
             document_id=doc_id,
             document=evidence.new_document(
@@ -130,16 +169,24 @@ def run_pipeline(
             ),
         )
 
-    shape = original_bgr.shape[:2]
-    _stage(stages, "image", "Image processed", started, True,
-           f"{shape[1]}x{shape[0]} px; " + ", ".join(ocr_result.preprocess_steps), on_stage)
+    if not image_stage_recorded:
+        _record_preprocessed(original_bgr.shape[:2], ocr_result.preprocess_steps)
 
-    started = time.time()
+    ocr_started = time.time() - max(0.0, ocr_result.processing_seconds)
     if ocr_result.error:
-        _stage(stages, "ocr", "OCR completed", started, False, ocr_result.error, on_stage)
+        _stage(stages, "ocr", "OCR completed", ocr_started, False, ocr_result.error, on_stage)
     else:
-        _stage(stages, "ocr", "OCR completed", started, True,
-               f"{len(ocr_result.observations)} raw observations ({ocr_result.engine})", on_stage)
+        _stage(
+            stages,
+            "ocr",
+            "OCR completed",
+            ocr_started,
+            True,
+            f"{len(ocr_result.observations)} raw observations ({ocr_result.engine})",
+            on_stage,
+        )
+
+    shape = original_bgr.shape[:2]
 
     # ---- Surface-damage map -----------------------------------------------------------
     started = time.time()

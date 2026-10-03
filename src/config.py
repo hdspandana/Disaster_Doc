@@ -11,12 +11,19 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / ".env", override=False)
+
 DEMO_DIR = ROOT / "demo"
 OUTPUT_DIR = ROOT / "outputs"
 ASSET_DIR = ROOT / "assets"
 
 CODE_VERSION = "disasterdoc-0.1.0"
+EVIDENCE_SCHEMA_VERSION = 2
+# Increment this when a decision-relevant rule or configuration changes.
+CONFIG_VERSION = "disasterdoc-config-v3"
 
 # --------------------------------------------------------------------------------------
 # OCR
@@ -28,6 +35,14 @@ EASYOCR_LANGS = ["en"]
 # a fresh clone starts clean and the workspace snapshot stays small. On a cold start EasyOCR
 # re-downloads them once, and the app shows a "loading OCR model" notice while it does.
 os.environ.setdefault("EASYOCR_MODULE_PATH", str(Path(os.environ.get("DD_MODEL_CACHE", Path.home() / ".cache" / "easyocr"))))
+
+# --------------------------------------------------------------------------------------
+# Upload/resource limits (enforced before OCR)
+# --------------------------------------------------------------------------------------
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024  # keep aligned with Streamlit server.maxUploadSize
+MAX_IMAGE_PIXELS = 25_000_000  # supports high-resolution scans while bounding decoded memory
+MAX_IMAGE_DIMENSION = 10_000
+MAX_SESSION_RESULTS = 1  # one active document per session; results contain full-resolution arrays
 
 # --------------------------------------------------------------------------------------
 # Preprocessing
@@ -58,6 +73,8 @@ TRUNCATION_MARKERS = (".", ",", ";", ":", "-", "_", "~", "|", "/")
 # Regions are normalised (0..1) against the uploaded image so any scan size works.
 # --------------------------------------------------------------------------------------
 TEMPLATE_NAME = "synthetic_id_v1"
+# Increment when geometry, field definitions, patterns, or field-specific validation rules change.
+TEMPLATE_VERSION = "2"
 
 TEMPLATE = {
     "name": TEMPLATE_NAME,
@@ -79,6 +96,12 @@ TEMPLATE = {
             "row_height": 0.075,
             "expected_type": "string",
             "pattern": r"^[A-Z]{2}-[0-9]{5}$",
+            "id_components": {
+                "prefix_length": 2,
+                "separator": "-",
+                "serial_length": 5,
+                "fixed_prefix_required": False,
+            },
             "min_chars": 7,  # 2 letters + 5 digits; the '-' is not a character of the value
             "min_tokens": 1,
             "verification_instruction": "Ask the applicant to state the ID number; cross-check against the issuing office register.",
@@ -89,6 +112,13 @@ TEMPLATE = {
             "row_height": 0.075,
             "expected_type": "date",
             "pattern": r"^[0-3][0-9][ /-][0-1][0-9][ /-](19|20)[0-9]{2}$",
+            "dob_components": {
+                "day_pattern": r"[0-3][0-9]",
+                "month_pattern": r"[0-1][0-9]",
+                "separator_pattern": r"[ /-]",
+                "year_representation_pattern": r"(19|20)[0-9]{2}",
+                "year_representation_description": "1900 through 2099 (existing template pattern)",
+            },
             "min_chars": 8,
             "min_tokens": 1,
             "verification_instruction": "Verify the date of birth from a second source; never infer digits from a damaged field.",

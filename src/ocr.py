@@ -13,12 +13,19 @@ from __future__ import annotations
 
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 import numpy as np
 
 from . import config
-from .preprocessing import InvalidImageError, load_image, preprocess, to_original_bbox, to_original_points
+from .preprocessing import (
+    InvalidImageError,
+    load_image,
+    preprocess,
+    to_original_bbox,
+    to_original_points,
+)
 
 
 @dataclass
@@ -78,23 +85,34 @@ def _get_reader():
     return _READER
 
 
-def extract_evidence(image_bytes: bytes) -> tuple[OcrResult, np.ndarray, np.ndarray]:
+def extract_evidence(
+    image_bytes: bytes,
+    on_preprocessed: Callable[[tuple[int, int], list[str]], None] | None = None,
+) -> tuple[OcrResult, np.ndarray, np.ndarray]:
     """Run the OCR stage.
 
     Returns (result, original_bgr, preprocessed_bgr). The OCR result always carries raw
     text, bounding boxes and engine confidence; on failure it carries `error` and no
     observations, and the caller must classify fields as UNRECOVERABLE rather than guess.
+    ``on_preprocessed`` is an optional timing/progress notification fired after safe image
+    decode and preprocessing, before the OCR engine runs. Callback failures are ignored.
     """
     img = load_image(image_bytes)  # raises InvalidImageError -> handled by the caller
     pre = preprocess(img)
+    if on_preprocessed is not None:
+        try:
+            on_preprocessed(img.shape[:2], list(pre.steps_applied))
+        except Exception:  # progress instrumentation must never break evidence extraction
+            pass
 
     result = OcrResult(preprocess_steps=pre.steps_applied)
     started = time.time()
     try:
         reader = _get_reader()
         raw = reader.readtext(pre.image, detail=1, paragraph=False)
-    except Exception as exc:  # pragma: no cover - depends on the OCR runtime
-        result.error = f"OCR engine failed: {type(exc).__name__}: {exc}"
+    except Exception:  # pragma: no cover - depends on the OCR runtime
+        # Do not expose engine exceptions, file paths, or runtime details to the browser.
+        result.error = "OCR engine failed. No field values are reported."
         result.processing_seconds = time.time() - started
         return result, img, pre.color
 
@@ -125,4 +143,4 @@ def extract_evidence(image_bytes: bytes) -> tuple[OcrResult, np.ndarray, np.ndar
     return result, img, pre.color
 
 
-__all__ = ["Observation", "OcrResult", "extract_evidence", "InvalidImageError"]
+__all__ = ["InvalidImageError", "Observation", "OcrResult", "extract_evidence"]

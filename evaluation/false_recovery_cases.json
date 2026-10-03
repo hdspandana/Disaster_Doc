@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "title": "DisasterDoc controlled false-recovery characterization cases",
+  "scope": "Classifier-level, deterministic synthetic observations; not an OCR benchmark.",
+  "ground_truth_policy": "ground_truth is evaluation-only metadata read by the runner after classification; it is never passed to src, MappedField, Observation, pipeline state, or production evidence.",
+  "provenance": "Correct synthetic field strings match VALUES in tools/make_demo_docs.py; corrupted observations are explicitly authored controlled variants.",
+  "confidence_note": "ocr_confidence is injected as a controlled classifier input. It is not an OCR-engine measurement or a calibrated probability of correctness.",
+  "damage_note": "Damage profiles are deterministic DamageMap masks injected directly into the classifier harness. They are not rendered images and do not test build_damage_map or OCR robustness.",
+  "cases": [
+    {
+      "case_id": "baseline_name_correct",
+      "field_name": "name",
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAO",
+      "error_type": "none",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "baseline_id_correct",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48291",
+      "error_type": "none",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "baseline_dob_correct",
+      "field_name": "dob",
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 1991",
+      "error_type": "none",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "baseline_district_correct",
+      "field_name": "district",
+      "ground_truth": "BENGALURU",
+      "observed_text": "BENGALURU",
+      "error_type": "none",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "baseline_address_correct",
+      "field_name": "address",
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW STREET, WARD 7",
+      "error_type": "none",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_040_clean",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ocr_confidence": 0.4,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_060_clean",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ocr_confidence": 0.6,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_080_clean",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ocr_confidence": 0.8,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_094_clean",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence_and_damage",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_conf_099_clean",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "confidence",
+      "ocr_confidence": 0.99,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_moderate",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ocr_confidence": 0.94,
+      "damage_profile": "zone_moderate_20pct"
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_heavy",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ocr_confidence": 0.94,
+      "damage_profile": "zone_heavy_50pct"
+    },
+    {
+      "case_id": "id_single_digit_substitution_damage_adjacent",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48281",
+      "error_type": "single_digit_substitution",
+      "confusion_pair": "9->8",
+      "sweep": "damage",
+      "ocr_confidence": 0.94,
+      "damage_profile": "adjacent_after_value"
+    },
+    {
+      "case_id": "id_multiple_digit_substitution",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-48071",
+      "error_type": "multiple_digit_substitution",
+      "confusion_pair": "2->0, 9->7",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_ocr_confusion_8_to_B",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4B291",
+      "error_type": "character_substitution",
+      "confusion_pair": "8->B",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_ocr_confusion_1_to_I",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4829I",
+      "error_type": "character_substitution",
+      "confusion_pair": "1->I",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_deletion",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-4821",
+      "error_type": "deletion",
+      "confusion_pair": "9 deleted",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_insertion",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482991",
+      "error_type": "insertion",
+      "confusion_pair": "extra 9",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_transposition",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-42891",
+      "error_type": "transposition",
+      "confusion_pair": "adjacent 8 and 2 swapped",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_truncation_unmarked",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482",
+      "error_type": "truncation",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_truncation_marker",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "DX-482...",
+      "error_type": "truncation_with_marker",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "id_valid_format_wrong_value",
+      "field_name": "id_number",
+      "ground_truth": "DX-48291",
+      "observed_text": "QY-73156",
+      "error_type": "valid_format_incorrect_value",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "dob_ocr_confusion_1_to_I",
+      "field_name": "dob",
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 199I",
+      "error_type": "character_substitution",
+      "confusion_pair": "1->I",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "dob_valid_format_wrong_value",
+      "field_name": "dob",
+      "ground_truth": "14 08 1991",
+      "observed_text": "14 08 1981",
+      "error_type": "valid_format_incorrect_value",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "dob_impossible_calendar_date",
+      "field_name": "dob",
+      "ground_truth": "14 08 1991",
+      "observed_text": "31 02 1991",
+      "error_type": "valid_shape_invalid_calendar_date",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "name_ocr_confusion_O_to_0",
+      "field_name": "name",
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RA0",
+      "error_type": "character_substitution",
+      "confusion_pair": "O->0",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "name_ocr_confusion_O_to_Q",
+      "field_name": "name",
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAQ",
+      "error_type": "character_substitution",
+      "confusion_pair": "O->Q",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "name_plausible_wrong_value",
+      "field_name": "name",
+      "ground_truth": "ANANYA RAO",
+      "observed_text": "ANANYA RAJ",
+      "error_type": "valid_format_incorrect_value",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "district_ocr_confusion_B_to_8",
+      "field_name": "district",
+      "ground_truth": "BENGALURU",
+      "observed_text": "8ENGALURU",
+      "error_type": "character_substitution",
+      "confusion_pair": "B->8",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "district_plausible_wrong_value",
+      "field_name": "district",
+      "ground_truth": "BENGALURU",
+      "observed_text": "MYSURU",
+      "error_type": "valid_format_incorrect_value",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "address_ocr_confusion_S_to_5",
+      "field_name": "address",
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW 5TREET, WARD 7",
+      "error_type": "character_substitution",
+      "confusion_pair": "S->5",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "address_ocr_confusion_I_to_1",
+      "field_name": "address",
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEV1EW STREET, WARD 7",
+      "error_type": "character_substitution",
+      "confusion_pair": "I->1",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    },
+    {
+      "case_id": "address_plausible_wrong_value",
+      "field_name": "address",
+      "ground_truth": "42 LAKEVIEW STREET, WARD 7",
+      "observed_text": "42 LAKEVIEW STREET, WARD 1",
+      "error_type": "valid_format_incorrect_value",
+      "ocr_confidence": 0.94,
+      "damage_profile": "clean"
+    }
+  ]
+}

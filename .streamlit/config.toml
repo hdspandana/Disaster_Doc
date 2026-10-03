@@ -1,13 +1,12 @@
 # DisasterDoc Streamlit configuration.
-# enableCORS/XSRF are disabled so the app can be served behind a reverse proxy
-# (e.g. a hosted preview or an internal demo link). This app holds no user accounts
-# and no persisted data, so there is no session state worth protecting with XSRF tokens.
+# Keep browser-origin protections enabled when serving through a reverse proxy. Configure
+# the proxy to forward the host/origin correctly rather than disabling XSRF for convenience.
 [server]
 address = "0.0.0.0"
 port = 8501
 headless = true
-enableCORS = false
-enableXsrfProtection = false
+enableCORS = true
+enableXsrfProtection = true
 maxUploadSize = 25
 
 [browser]
@@ -22,5 +21,5 @@ textColor = "#1B2430"
 font = "sans serif"
 
 [client]
-showErrorDetails = true
+showErrorDetails = false
 toolbarMode = "minimal"
