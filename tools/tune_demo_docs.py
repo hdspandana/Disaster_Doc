@@ -13,7 +13,6 @@ import tempfile
 from pathlib import Path
 
 import cv2
-import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -25,7 +24,6 @@ def main() -> None:
     import easyocr
 
     reader = easyocr.Reader(["en"], gpu=False, verbose=False)
-    src = ROOT / "tools" / "make_demo_docs.py"
     for v in values:
         env = dict(os.environ, **{"DD_" + param.upper(): v})
         code = (
@@ -35,12 +33,14 @@ def main() -> None:
             "import numpy as np; rng = np.random.default_rng(G.SEED + 2*977);"
             "img, gt = G.build_severe(rng); img.save(G.DEMO_DIR / 'severe_damage.png')"
         )
-        outdir = Path(tempfile.mkdtemp())
-        subprocess.run([sys.executable, "-c", code], cwd=ROOT, env=dict(env, OUTDIR=str(outdir)), check=True)
-        img = cv2.imread(str(outdir / "severe_damage.png"))
-        res = reader.readtext(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), detail=1, paragraph=False)
-        rows = [f"{t!r}({c:.2f})@y{int(min(p[1] for p in b))}" for b, t, c in res if int(min(p[1] for p in b)) > 100]
-        print(f"{param}={v}: {rows}")
+        with tempfile.TemporaryDirectory(prefix="disasterdoc-tune-") as temp_dir:
+            outdir = Path(temp_dir)
+            subprocess.run([sys.executable, "-c", code], cwd=ROOT, env=dict(env, OUTDIR=str(outdir)), check=True)
+            img = cv2.imread(str(outdir / "severe_damage.png"))
+            res = reader.readtext(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), detail=1, paragraph=False)
+            rows = [f"{t!r}({c:.2f})@y{int(min(p[1] for p in b))}" for b, t, c in res
+                    if int(min(p[1] for p in b)) > 100]
+            print(f"{param}={v}: {rows}")
 
 
 if __name__ == "__main__":
