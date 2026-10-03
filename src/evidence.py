@@ -2,9 +2,9 @@
 Evidence assembly: the structured evidence document, the annotated image, the
 human-verification queue and guardrailed AI merging.
 
-This module is the only place where the AI layer is allowed to write into a field,
-and it can only ever write into `ai_commentary` (never `value`, `status`,
-`raw_ocr_text`, `confidence_bucket` or `evidence`).
+This module is the only place where the AI layer may attach field commentary, and it
+can only write `ai_commentary` (never an observation, claim, status, reason code,
+OCR/damage/validation evidence, or confidence).
 """
 
 from __future__ import annotations
@@ -36,8 +36,44 @@ STATUS_LABELS = {
     config.STATUS_UNRECOVERABLE: "UNRECOVERABLE",
 }
 
-# AI input keys that are silently ignored: the AI may not decide facts.
-FORBIDDEN_AI_KEYS = ("value", "status", "raw_ocr_text", "confidence_bucket", "ocr_confidence", "bbox")
+# AI output keys that are ignored and logged: the AI may not decide or rewrite evidence.
+FORBIDDEN_AI_KEYS = (
+    "value",
+    "claimed_value",
+    "observed_value",
+    "raw_ocr_text",
+    "status",
+    "reason_codes",
+    "reason_descriptions",
+    "deterministic_reasons",
+    "reasons",
+    "evidence",
+    "ocr_evidence",
+    "validation_evidence",
+    "validation_result",
+    "validation_status",
+    "validation_reason_codes",
+    "validator_results",
+    "validators",
+    "dob_calendar",
+    "validation",
+    "damage_evidence",
+    "confidence_bucket",
+    "ocr_confidence",
+    "bbox",
+    "evidence_bbox",
+    "field_region_bbox",
+    "damage_bbox",
+    "obscuration_in_zone",
+    "adjacent_obscuration",
+    "needs_verification",
+    "evidence_schema_version",
+    "config_version",
+    "template_version",
+    "code_version",
+    "metadata",
+    "ground_truth",
+)
 
 
 @dataclass
@@ -60,6 +96,14 @@ class EvidenceDocument:
 
     def to_dict(self) -> dict:
         return {
+            "evidence_schema_version": config.EVIDENCE_SCHEMA_VERSION,
+            "metadata": {
+                "code_version": self.audit.get("code_version") or config.CODE_VERSION,
+                "config_version": config.CONFIG_VERSION,
+                "template_version": config.TEMPLATE_VERSION,
+                "template": self.template,
+                "ocr_engine": self.audit.get("ocr_engine"),
+            },
             "document_id": self.document_id,
             "processed_at": self.processed_at,
             "template": self.template,
@@ -134,10 +178,10 @@ def attach_ai_commentary(
 ) -> list[dict]:
     """Merge guardrailed AI commentary into fields.
 
-    Only the `ai_commentary` slot is written. Facts (value, status, raw_ocr_text,
-    confidence bucket, bboxes) are never touched, and any attempt by the model to
-    return one of those keys is recorded as a rejected event so the UI and the report
-    can show that the separation was enforced at runtime, not merely claimed.
+    Only the `ai_commentary` slot is written. Observations, claims, status, reason
+    codes, OCR/damage/validation evidence, confidence and geometry are never touched.
+    Attempts to return those keys are recorded by name (not value) so the report can
+    show that deterministic ownership was enforced at runtime.
     """
     events: list[dict] = []
     notes = list(guardrail_notes or [])
@@ -287,10 +331,10 @@ def new_document(
 
 
 __all__ = [
-    "EvidenceDocument",
     "STATUS_COLOURS",
     "STATUS_ICONS",
     "STATUS_LABELS",
+    "EvidenceDocument",
     "attach_ai_commentary",
     "build_verification_tasks",
     "new_document",

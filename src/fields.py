@@ -61,6 +61,9 @@ class MappedField:
     ocr_confidence: float = 0.0  # best single-observation OCR confidence
     row_band: tuple[int, int] = (0, 0)
     value_zone: tuple[int, int] = (0, 0)
+    # Different usable OCR readings over overlapping pixels cannot be resolved by
+    # confidence ordering alone. Keep the alternatives for classification/reporting.
+    conflicting_observation_pairs: list[tuple[Observation, Observation]] = field(default_factory=list)
 
     @property
     def has_evidence(self) -> bool:
@@ -128,19 +131,18 @@ def find_label(spec: dict, observations: list[Observation], shape: tuple[int, in
     return best[1]
 
 
-def select_value_observations(
+def _value_candidates(
     spec: dict,
     observations: list[Observation],
     shape: tuple[int, int],
     excluded_ids: set[str],
 ) -> list[Observation]:
-    """Collect the observations that belong to this field's value, merged into one line."""
+    """Return observations in the field value region before choosing a line."""
     band = _row_band(spec, shape)
     zone = _value_zone(shape)
-
     band_height = max(1, band[1] - band[0])
     max_box_height = 1.6 * band_height  # a value line cannot be taller than its row band
-    candidates = [
+    return [
         o
         for o in observations
         if o.observation_id not in excluded_ids
@@ -150,6 +152,40 @@ def select_value_observations(
         # several fields. They are not single-line values, so they are not evidence.
         and (o.bbox[3] - o.bbox[1]) <= max_box_height
     ]
+
+
+def _overlap(a: list[int], b: list[int]) -> bool:
+    """True when two OCR boxes share positive area in both dimensions."""
+    return min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1])
+
+
+def _conflicting_observation_pairs(candidates: list[Observation]) -> list[tuple[Observation, Observation]]:
+    """Keep usable, materially different readings of the same overlapping pixels."""
+    usable = [
+        o for o in candidates
+        if o.confidence >= config.MIN_USABLE_OCR_CONF and o.alnum_count >= config.MIN_USABLE_CHARS
+    ]
+    pairs: list[tuple[Observation, Observation]] = []
+    for index, first in enumerate(usable):
+        for second in usable[index + 1:]:
+            if first.observation_id == second.observation_id:
+                continue
+            if first.text.strip().casefold() == second.text.strip().casefold():
+                continue
+            if _overlap(first.bbox, second.bbox):
+                pairs.append((first, second))
+    return pairs
+
+
+def select_value_observations(
+    spec: dict,
+    observations: list[Observation],
+    shape: tuple[int, int],
+    excluded_ids: set[str],
+) -> list[Observation]:
+    """Collect the observations that belong to this field's value, merged into one line."""
+    band = _row_band(spec, shape)
+    candidates = _value_candidates(spec, observations, shape, excluded_ids)
     if not candidates:
         return []
 
@@ -189,7 +225,17 @@ def map_fields(observations: list[Observation], shape: tuple[int, int]) -> dict[
 
     mapped: dict[str, MappedField] = {}
     for key, spec in config.TEMPLATE["fields"].items():
+        candidates = _value_candidates(spec, observations, shape, label_ids)
+        conflicts = _conflicting_observation_pairs(candidates)
         value_obs = select_value_observations(spec, observations, shape, label_ids)
+        # Keep one deterministic reading in the compatibility raw_text field; the
+        # classifier receives every competing observation separately and must abstain.
+        losing_ids: set[str] = set()
+        for first, second in conflicts:
+            winner = max((first, second), key=lambda o: (o.confidence, o.alnum_count))
+            loser = second if winner is first else first
+            losing_ids.add(loser.observation_id)
+        value_obs = [o for o in value_obs if o.observation_id not in losing_ids]
         band = _row_band(spec, shape)
         zone = _value_zone(shape)
 
@@ -214,6 +260,7 @@ def map_fields(observations: list[Observation], shape: tuple[int, int]) -> dict[
             ocr_confidence=confidence,
             row_band=band,
             value_zone=zone,
+            conflicting_observation_pairs=conflicts,
         )
     return mapped
 
