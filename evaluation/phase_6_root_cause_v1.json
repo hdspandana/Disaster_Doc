@@ -230,10 +230,6 @@
       "evaluation/image_level_results.json": "211a0b0666927c879f26652807f408ffa73efac43ae7f6b4c2e26413b536bc2f"
     }
   },
-  "repository_state": {
-    "revision": "7309ce93bc6a",
-    "worktree_dirty": true
-  },
   "residual_cases": [
     {
       "case_id": "id_single_digit_substitution_conf_060_clean",
@@ -5860,7 +5856,7 @@
     "src/ocr.py": "9c3df7bc0d290e951adbfc9680c9ebf1f51e3c6c3cfa70c88b18a152f825e34c",
     "src/pipeline.py": "979ada6f8cd31f0c698271311724273c1ac8e597c055a29084965b3d06a6b285",
     "src/validation.py": "3ba4586256339e08e3410d042a35dcbaaf846f3978e45459e3c5ac3eca0ed1ae",
-    "tools/analyze_phase6.py": "8a6745f3791c3e89113bf3cc19d54ed66c08b3994c53ab3bc614f8e2b32fec5a"
+    "tools/analyze_phase6.py": "252790146a0e618a784462431591210f0c54ed64da4c46f9b448f44e6be36579"
   },
   "root_cause_categories": {
     "PHASE2_CONTROLLED_CANDIDATE_VS_SOURCE_LABEL": "Injected synthetic classifier observation is not an OCR transcript. Its mismatch with source value tests source consistency/semantic limits, not OCR error.",

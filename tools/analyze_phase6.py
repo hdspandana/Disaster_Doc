@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import subprocess
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -180,36 +179,6 @@ def _asset_tree_hash(root: Path) -> tuple[int, str]:
     ]
     payload = json.dumps(rows, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return len(rows), _sha256_bytes(payload)
-
-
-def _repository_state() -> dict[str, Any]:
-    try:
-        revision = subprocess.run(
-            ["git", "rev-parse", "--short=12", "HEAD"],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        status = subprocess.run(
-            [
-                "git",
-                "status",
-                "--porcelain",
-                "--untracked-files=all",
-                "--",
-                ".",
-                ":(exclude)evaluation/phase_6_root_cause_v1.json",
-            ],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        dirty = bool(status)
-    except (OSError, subprocess.CalledProcessError):
-        return {"revision": None, "worktree_dirty": None}
-    return {"revision": revision, "worktree_dirty": dirty}
 
 
 def _index(rows: list[dict[str, Any]], key: str = "case_id") -> dict[str, dict[str, Any]]:
@@ -567,7 +536,6 @@ def build_analysis() -> dict[str, Any]:
             relative: _sha256_file(ROOT / relative)
             for relative in (*SOURCE_FILES, "tools/analyze_phase6.py")
         },
-        "repository_state": _repository_state(),
     }
 
 
